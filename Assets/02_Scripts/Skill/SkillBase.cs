@@ -70,12 +70,18 @@ public abstract class SkillBase
     /// <param name="deltaTime"></param>
     public virtual void UpdateSkill(float deltaTime)
     {
+        bool wasActive = _state.isActive;
+
         _state.UpdateCooldown(deltaTime);
         _state.UpdateActive(deltaTime);
 
         //지속성 스킬이 활성화 되면
         if (_state.isActive)
             OnActiveUpdate(deltaTime);
+
+        //활성화 상태가 방금 끝났다면 OnSkillEnd 호출
+        if (wasActive && !_state.isActive)
+            OnSkillEnd();
     }
 
     /// <summary>

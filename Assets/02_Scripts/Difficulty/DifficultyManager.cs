@@ -30,7 +30,6 @@ public class DifficultyManager : MonoBehaviour
     [SerializeField] float _maxDarknessAlpha = 0.8f;       // 최대 어둠 투명도
 
     [Header("----- 디버그용 -----")]
-    [SerializeField] bool _debugMode = false;
     [SerializeField] KeyCode _increaseErosionKey = KeyCode.F1;
     [SerializeField] KeyCode _decreaseErosionKey = KeyCode.F2;
 
@@ -90,16 +89,13 @@ public class DifficultyManager : MonoBehaviour
     private void Update()
     {
         // 디버그 용
-        if (_debugMode)
+        if (Input.GetKeyDown(_increaseErosionKey))
         {
-            if (Input.GetKeyDown(_increaseErosionKey))
-            {
-                IncreaseErosionLevel();
-            }
-            else if (Input.GetKeyDown(_decreaseErosionKey))
-            {
-                DecreaseErosionLevel();
-            }
+            IncreaseErosionLevel();
+        }
+        else if (Input.GetKeyDown(_decreaseErosionKey))
+        {
+            DecreaseErosionLevel();
         }
     }
 

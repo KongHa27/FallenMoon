@@ -22,5 +22,5 @@ MonoBehaviour:
   damage: 5
   range: 7
   duration: 0
-  effectPrefab: {fileID: 0}
+  effectPrefab: {fileID: 2248836812795275741, guid: e3dc538dbf9512d4f9e6e4ee23796345, type: 3}
   soundClip: {fileID: 0}

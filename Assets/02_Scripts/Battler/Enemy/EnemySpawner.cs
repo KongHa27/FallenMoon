@@ -123,7 +123,7 @@ public class EnemySpawner : MonoBehaviour
         // 적 생성
         if (spawnPos == Vector3.zero)
         {
-            Debug.LogError("적절한 스폰 위치를 찾을 수 없습니다.");
+            //Debug.LogError("적절한 스폰 위치를 찾을 수 없습니다.");
             SpawnEnemy();
             return;
         }

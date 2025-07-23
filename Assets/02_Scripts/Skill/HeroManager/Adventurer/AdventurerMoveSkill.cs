@@ -85,7 +85,7 @@ public class AdventurerMoveSkill : SkillBase
     {
         if (_rigid != null)
         {
-            // Rigidbody2D 설정 확인용 디버그
+            // RigidBody2D 설정 확인용 디버그
             Debug.Log($"구르기 시작 - 방향: {direction}, 속도: {_rollSpeed}");
             Debug.Log($"RigidBody 상태 - Drag: {_rigid.drag}, GravityScale: {_rigid.gravityScale}");
 
@@ -111,6 +111,18 @@ public class AdventurerMoveSkill : SkillBase
     /// <param name="deltaTime"></param>
     protected override void OnActiveUpdate(float deltaTime)
     {
+        if (State.isActive && _state.activeTimer <= 0)
+            OnSkillEnd();
+    }
+
+    public override void UpdateSkill(float deltaTime)
+    {
+        bool wasActive = _state.isActive;
+
+        base.UpdateSkill(deltaTime);
+
+        if (wasActive && !_state.isActive)
+            OnSkillEnd();
     }
 
     /// <summary>
@@ -118,7 +130,11 @@ public class AdventurerMoveSkill : SkillBase
     /// </summary>
     public override void OnSkillEnd()
     {
+        //이미 종료된 상태라면 중복 실행 방지
+        if (!_isRolling) return;
+
         _isRolling = false;
+
         // 원래 레이어로 복구 (무적 해제)
         _caster.gameObject.layer = _originalLayer;
 

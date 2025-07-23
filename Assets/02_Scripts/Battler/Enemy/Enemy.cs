@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -10,6 +11,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] Mover _mover;
     [SerializeField] SpriteRenderer _renderer;
     [SerializeField] Animator _animator;
+    [SerializeField] Rigidbody2D _rigid;
+    [SerializeField] Collider2D _collider;
 
     [Header("----- AI 설정 -----")]
     [SerializeField] float _detectionRange = 5f;        //감지 거리
@@ -17,9 +20,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] float _attackCooldown = 2f;        //공격 쿨타임
     [SerializeField] LayerMask _targetLayer;            //공격 타겟의 레이어
 
-    //[Header("----- 시각적 효과 -----")]
-    //[SerializeField] GameObject _eliteEffectPrefab;     //엘리트 이펙트
-    //[SerializeField] Color _eliteColor = Color.yellow;  //엘리트 이미지 색
+    [Header("----- 시각적 효과 -----")]
+    [SerializeField] GameObject _eliteIcon;
 
     float _moveSpeed;
     Transform _target;          //공격 대상(타겟)
@@ -57,20 +59,36 @@ public class Enemy : MonoBehaviour
         _model.OnDead += OnDead;
 
         // 이동 속도 설정
-        if (_mover != null)
-            _mover.SetSpeed(_model.MoveSpeed);
+        StartCoroutine(SetSpeedAfterFrame());
 
         // 엘리트라면 시각 효과 적용
         if (_model.IsElite)
         {
             Debug.LogWarning("엘리트 몹 출현!!");
             transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-            //ApplyEliteVisualEffects();
+            _eliteIcon.SetActive(true);
         }
+
+        //Debug.Log($"Enemy {gameObject.name} Initialize 완료");
+    }
+
+    /// <summary>
+    /// 한 프레임 뒤에 이동 속도 설정하는 코루틴
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator SetSpeedAfterFrame()
+    {
+        yield return null; // 한 프레임 대기
+
+        if (_mover != null)
+            _mover.SetSpeed(_model.MoveSpeed);
     }
 
     private void Update()
     {
+        //디버그
+        //Debug.Log($"Enemy {gameObject.name} Update 호출됨 - _isDead: {_isDead}");
+
         if (_isDead) return;
 
         FindTarget();
@@ -99,9 +117,12 @@ public class Enemy : MonoBehaviour
     {
         if (_target == null)
         {
+            //Debug.Log($"타겟 탐색 중");
+
             Collider2D targetCollider = Physics2D.OverlapCircle(transform.position, _detectionRange, _targetLayer);
             if (targetCollider != null)
             {
+                //Debug.Log("타겟 탐지!!!");
                 _target = targetCollider.transform;
             }
         }
@@ -112,9 +133,15 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void ChaseTarget()
     {
-        if (_target == null || _mover == null) return;
+        if (_target == null || _mover == null)
+        {
+            Debug.LogWarning($"ChaseTarget 실패 - Target: {_target}, Mover: {_mover}");
+            return;
+        }
 
         Vector2 direction = (_target.position - transform.position).normalized;
+        //Debug.Log($"적 {gameObject.name} 추적 중 - Direction: {direction}, Speed: {_mover.Speed}");
+
         _mover.Move(direction);
 
         // 스프라이트 방향 설정
@@ -175,6 +202,11 @@ public class Enemy : MonoBehaviour
     void OnDead()
     {
         _isDead = true;
+
+        //사망 시 컴포넌트들 비활성화
+        _collider.enabled = false;
+        _rigid.simulated = false;
+        _mover.enabled = false;
 
         //경험치, 골드 보상 지급
         Hero hero = FindObjectOfType<Hero>();
