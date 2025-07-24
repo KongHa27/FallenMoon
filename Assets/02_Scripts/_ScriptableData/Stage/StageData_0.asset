@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a054ab590dc8ff74fab5b2f45ab832d7, type: 3}
+  m_Name: StageData_0
+  m_EditorClassIdentifier: 
+  _stageNumber: 0
+  _stageName: "\uB8E8\uBA58\uC758 \uC778\uB3C4 (\uD29C\uD1A0\uB9AC\uC5BC)"
+  _mapPrefabs:
+  - {fileID: 6222822166435325640, guid: 754c619d51c52dd4488abd630bb90506, type: 3}
+  - {fileID: 6222822166435325640, guid: f15929210f8f25f44b209f107bc41052, type: 3}
+  _bossPrefab: {fileID: 8719530476096001677, guid: f4f213d2b8f5ea34eb24fe903aebe467, type: 3}

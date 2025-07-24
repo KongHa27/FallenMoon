@@ -1,36 +1,37 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 /// <summary>
-/// ÀüÃ¼ ½ºÅ×ÀÌÁö¸¦ °ü¸®ÇÏ´Â Å¬·¡½º
+/// ì „ì²´ ìŠ¤í…Œì´ì§€ë¥¼ ê´€ë¦¬í•˜ëŠ” í´ë˜ìŠ¤
 /// </summary>
 public class StageManager : MonoBehaviour
 {
-    [Header("----- ½ºÅ×ÀÌÁö ¼³Á¤ -----")]
-    [SerializeField] StageData[] _stages = new StageData[5];    //½ºÅ×ÀÌÁö ¹è¿­
-    [SerializeField] Transform _player;         //ÇÃ·¹ÀÌ¾î
-    [SerializeField] LayerMask _ground;         //ground Å¸ÀÏ ·¹ÀÌ¾î
+    [Header("----- ìŠ¤í…Œì´ì§€ ì„¤ì • -----")]
+    [SerializeField] StageData[] _stageDatas;   //ìŠ¤í…Œì´ì§€ ë°°ì—´
+    [SerializeField] Transform _player;         //í”Œë ˆì´ì–´
+    [SerializeField] LayerMask _ground;         //ground íƒ€ì¼ ë ˆì´ì–´
 
     [Header("----- UI -----")]
     [SerializeField] GameObject _stageUI;
 
-    MagicCircleSystem _magicCircleSystem;       //¸¶¹ıÁø ½Ã½ºÅÛ ÂüÁ¶
+    MagicCircleSystem _magicCircleSystem;       //ë§ˆë²•ì§„ ì‹œìŠ¤í…œ ì°¸ì¡°
 
-    int _curStageIndex = 0;         //ÇöÀç ½ºÅ×ÀÌÁö ÀÎµ¦½º
-    GameObject _curMapInstance;     //ÇöÀç ½ºÅ×ÀÌÁö ¸Ê
+    int _curStageIndex = 0;         //í˜„ì¬ ìŠ¤í…Œì´ì§€ ì¸ë±ìŠ¤
+    GameObject _curMapInstance;     //í˜„ì¬ ìŠ¤í…Œì´ì§€ ë§µ
 
-    //½ºÅ×ÀÌÁö ¸Å´ÏÀú ÀÎ½ºÅÏ½º
+    //ìŠ¤í…Œì´ì§€ ë§¤ë‹ˆì € ì¸ìŠ¤í„´ìŠ¤
     public static StageManager Instance { get; private set; }
     public int CurStageIndex => _curStageIndex;
-    public StageData CurStage => _stages[_curStageIndex];
+    public StageData CurStage => _stageDatas[_curStageIndex];
+    public int TotalStageCount => _stageDatas.Length;
 
-    //ÀÌº¥Æ®
-    public event Action<int> OnStageStart;
-    public event Action<int> OnStageComplete;
-    public event Action OnAllStageComplete;
+    //ì´ë²¤íŠ¸
+    public event Action<int> OnStageStart;      //ìŠ¤í…Œì´ì§€ ì‹œì‘ ì´ë²¤íŠ¸
+    public event Action<int> OnStageComplete;   //ìŠ¤í…Œì´ì§€ ì™„ë£Œ ì´ë²¤íŠ¸
+    public event Action OnAllStageComplete;     //ëª¨ë“  ìŠ¤í…Œì´ì§€ ì™„ë£Œ ì´ë²¤íŠ¸
 
     private void Awake()
     {
@@ -45,56 +46,69 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
+        if (_stageDatas == null || _stageDatas.Length == 0)
+        {
+            Debug.LogError("ìŠ¤í…Œì´ì§€ ë°ì´í„°ê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
+            return;
+        }
+
         StartStage(0);
     }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö¸¦ ½ÃÀÛÇÏ´Â ÇÔ¼ö
-    /// ·£´ı ¸Ê ¼±ÅÃ, ÇÃ·¹ÀÌ¾î ¹× ¸¶¹ıÁøÀ» ·£´ı À§Ä¡¿¡ »ı¼º
+    /// ìŠ¤í…Œì´ì§€ë¥¼ ì‹œì‘í•˜ëŠ” í•¨ìˆ˜
+    /// ëœë¤ ë§µ ì„ íƒ, í”Œë ˆì´ì–´ ë° ë§ˆë²•ì§„ì„ ëœë¤ ìœ„ì¹˜ì— ìƒì„±
     /// </summary>
     /// <param name="stageIndex"></param>
     public void StartStage(int stageIndex)
     {
-        //¸ğµç ½ºÅ×ÀÌÁö Å¬¸®¾î ½Ã
-        if (stageIndex >= _stages.Length)
+        //ëª¨ë“  ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ ì‹œ
+        if (stageIndex >= _stageDatas.Length)
         {
             OnAllStageComplete?.Invoke();
-            Debug.Log("¸ğµç ½ºÅ×ÀÌÁö Å¬¸®¾î!");
+            Debug.Log("ëª¨ë“  ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´!");
             return;
         }
 
         _curStageIndex = stageIndex;
-        StageData curStage = _stages[_curStageIndex];
+        StageData curStage = _stageDatas[_curStageIndex];
 
-        //±âÁ¸ ¸Ê Á¦°Å
+        //ê¸°ì¡´ ë§µ ì œê±°
         if (_curMapInstance != null)
             Destroy(_curMapInstance);
 
-        //·£´ı ¸Ê ¼±ÅÃ
+        //ëœë¤ ë§µ ì„ íƒ
         int ranMapIndex = UnityEngine.Random.Range(0, curStage.MapPrefabs.Length);
         GameObject selectedMap = curStage.MapPrefabs[ranMapIndex];
 
-        //¸Ê »ı¼º
+        if (selectedMap == null)
+        {
+            Debug.LogError($"ìŠ¤í…Œì´ì§€ {stageIndex}ì˜ ë§µ {ranMapIndex}ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
+            return;
+        }
+
+        //ë§µ ìƒì„±
         _curMapInstance = Instantiate(selectedMap);
 
-        Debug.Log($"½ºÅ×ÀÌÁö {stageIndex + 1} ½ÃÀÛ, ¸Ê {ranMapIndex + 1} ¼±ÅÃ");
+        Debug.Log($"ìŠ¤í…Œì´ì§€ {stageIndex + 1} ì‹œì‘, ë§µ {ranMapIndex + 1} ì„ íƒ");
 
-        //ÇÃ·¹ÀÌ¾î ·£´ı À§Ä¡ ½ºÆù
+        //í”Œë ˆì´ì–´ ëœë¤ ìœ„ì¹˜ ìŠ¤í°
         StartCoroutine(SpawnPlayerRoutine());
 
-        //¸¶¹ıÁø ½Ã½ºÅÛ ÃÊ±âÈ­
+        //ë§ˆë²•ì§„ ì‹œìŠ¤í…œ ì´ˆê¸°í™”
         InitializeMagicCircleSystem(curStage);
 
+        //ìŠ¤í…Œì´ì§€ ì‹œì‘ ì´ë²¤íŠ¸ ë°œí–‰
         OnStageStart?.Invoke(_curStageIndex);
     }
 
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î¸¦ ·£´ı À§Ä¡¿¡ »ı¼ºÇÏ´Â ÄÚ·çÆ¾
+    /// í”Œë ˆì´ì–´ë¥¼ ëœë¤ ìœ„ì¹˜ì— ìƒì„±í•˜ëŠ” ì½”ë£¨í‹´
     /// </summary>
     /// <returns></returns>
     IEnumerator SpawnPlayerRoutine()
     {
-        //¸Ê »ı¼º ¿Ï·á ´ë±â
+        //ë§µ ìƒì„± ì™„ë£Œ ëŒ€ê¸°
         yield return new WaitForEndOfFrame();
 
         Vector3 spawnPos = GetRanPosOnGround();
@@ -102,21 +116,21 @@ public class StageManager : MonoBehaviour
         if (spawnPos != Vector3.zero)
         {
             _player.position = spawnPos;
-            Debug.Log($"ÇÃ·¹ÀÌ¾î ½ºÆù : {spawnPos}");
+            Debug.Log($"í”Œë ˆì´ì–´ ìŠ¤í° : {spawnPos}");
         }
         else
         {
-            Debug.LogError("ÀûÀıÇÑ ½ºÆù À§Ä¡¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù!");
+            Debug.LogError("ì ì ˆí•œ ìŠ¤í° ìœ„ì¹˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤!");
         }
     }
 
     /// <summary>
-    /// ¸¶¹ıÁø ½Ã½ºÅÛ ÃÊ±âÈ­ ÇÔ¼ö
+    /// ë§ˆë²•ì§„ ì‹œìŠ¤í…œ ì´ˆê¸°í™” í•¨ìˆ˜
     /// </summary>
     /// <param name="data"></param>
     void InitializeMagicCircleSystem(StageData data)
     {
-        //¸¶¹ıÁø ½Ã½ºÅÛ ÄÄÆ÷³ÍÆ® ÂüÁ¶
+        //ë§ˆë²•ì§„ ì‹œìŠ¤í…œ ì»´í¬ë„ŒíŠ¸ ì°¸ì¡°
         _magicCircleSystem = FindObjectOfType<MagicCircleSystem>();
 
         if (_magicCircleSystem == null)
@@ -125,12 +139,12 @@ public class StageManager : MonoBehaviour
             _magicCircleSystem = magicCircleObj.AddComponent<MagicCircleSystem>();
         }
 
-        //¸¶¹ıÁø ½Ã½ºÅÛ ÃÊ±âÈ­
-        _magicCircleSystem.Initialize(data.BossPrefab, this);
+        //ë§ˆë²•ì§„ ì‹œìŠ¤í…œ ì´ˆê¸°í™”
+        _magicCircleSystem.Initialize(data, this);
     }
 
     /// <summary>
-    /// Gound Å¸ÀÏ À§¿¡¼­ ·£´ı À§Ä¡¸¦ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+    /// Gound íƒ€ì¼ ìœ„ì—ì„œ ëœë¤ ìœ„ì¹˜ë¥¼ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     /// <returns></returns>
     public Vector3 GetRanPosOnGround()
@@ -167,19 +181,19 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö¸¦ Å¬¸®¾îÇÏ°í ´ÙÀ½ ½ºÅ×ÀÌÁö·Î ³Ñ¾î°¡´Â ÇÔ¼ö
+    /// ìŠ¤í…Œì´ì§€ë¥¼ í´ë¦¬ì–´í•˜ê³  ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ë„˜ì–´ê°€ëŠ” í•¨ìˆ˜
     /// </summary>
     public void CompleteStage()
     {
         OnStageComplete?.Invoke(_curStageIndex);
-        Debug.Log($"½ºÅ×ÀÌÁö {_curStageIndex + 1} Å¬¸®¾î!");
+        Debug.Log($"ìŠ¤í…Œì´ì§€ {_curStageIndex + 1} í´ë¦¬ì–´!");
 
-        //´ÙÀ½ ½ºÅ×ÀÌÁö·Î
+        //ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ
         StartCoroutine(StartNextStageafterDelay(2f));
     }
 
     /// <summary>
-    /// ´ÙÀ½ ½ºÅ×ÀÌÁö·Î ³Ñ¾î°¡´Â ÄÚ·çÆ¾
+    /// ë”œë ˆì´ í›„ ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ë„˜ì–´ê°€ëŠ” ì½”ë£¨í‹´
     /// </summary>
     /// <param name="delay"></param>
     /// <returns></returns>
@@ -187,5 +201,17 @@ public class StageManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         StartStage(_curStageIndex + 1);
+    }
+
+    /// <summary>
+    /// íŠ¹ì • ìŠ¤í…Œì´ì§€ë¡œ ì´ë™ (ë””ë²„ê·¸ìš©)
+    /// </summary>
+    /// <param name="stageIndex"></param>
+    public void GoToStage(int stageIndex)
+    {
+        if (stageIndex >= 0 && stageIndex < _stageDatas.Length)
+            StartStage(stageIndex);
+        else
+            Debug.LogWarning($"ì˜ëª»ëœ ìŠ¤í…Œì´ì§€ ì¸ë±ìŠ¤ {stageIndex}");
     }
 }

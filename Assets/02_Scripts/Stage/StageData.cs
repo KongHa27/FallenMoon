@@ -1,19 +1,44 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class StageData
+[CreateAssetMenu(menuName = "GameSettings/StageData", fileName = "StageData")]
+public class StageData : ScriptableObject
 {
-    [SerializeField] int _stageNumber;         //½ºÅ×ÀÌÁö ¹øÈ£ (ÀÎµ¦½º)
-    [SerializeField] string _stageName;        //½ºÅ×ÀÌÁö ÀÌ¸§
+    [Header("----- ìŠ¤í…Œì´ì§€ ì •ë³´ -----")]
+    [SerializeField] int _stageNumber;         //ìŠ¤í…Œì´ì§€ ë²ˆí˜¸ (ì¸ë±ìŠ¤)
+    [SerializeField] string _stageName;        //ìŠ¤í…Œì´ì§€ ì´ë¦„
 
-    [SerializeField] GameObject[] _mapPrefabs = new GameObject[3];     //½ºµ¥ÀÌÁö ´ç 3°³ÀÇ ¸Ê ÇÁ¸®ÆÕ
+    [Header("----- ë§µ ì„¤ì • -----")]
+    [SerializeField] GameObject[] _mapPrefabs = new GameObject[3];     //ìŠ¤ë°ì´ì§€ ë‹¹ 3ê°œì˜ ë§µ í”„ë¦¬íŒ¹
 
-    [SerializeField] GameObject _bossPrefab;   //½ºÅ×ÀÌÁö º¸½º ÇÁ¸®ÆÕ
+    [Header("----- ë³´ìŠ¤ ì„¤ì • -----")]
+    [SerializeField] GameObject _bossPrefab;   //ìŠ¤í…Œì´ì§€ ë³´ìŠ¤ í”„ë¦¬íŒ¹
 
+    [Header("----- ë§ˆë²•ì§„ ì„¤ì • -----")]
+    [SerializeField] float _chargingTime = 10f;             //ë§ˆë²•ì§„ ì¶©ì „ ì‹œê°„
+    [SerializeField] float _chargingAnimationSpeed = 2f;    //ì¶©ì „ ì¤‘ ì• ë‹ˆë©”ì´ì…˜ ì†ë„
+
+    //í”„ë¡œí¼í‹°
     public int StageNumber => _stageNumber;
     public string StageName => _stageName;
     public GameObject[] MapPrefabs => _mapPrefabs;
     public GameObject BossPrefab => _bossPrefab;
+    public float ChargingTime => _chargingTime;
+    public float ChargingAnimationSpeed => _chargingAnimationSpeed;
+
+    private void OnValidate()
+    {
+        // ìŠ¤í…Œì´ì§€ ë²ˆí˜¸ê°€ ìŒìˆ˜ê°€ ë˜ì§€ ì•Šë„ë¡
+        if (_stageNumber < 0)
+            _stageNumber = 0;
+
+        // ì¶©ì „ ì‹œê°„ì´ 0ë³´ë‹¤ ì‘ì•„ì§€ì§€ ì•Šë„ë¡
+        if (_chargingTime <= 0)
+            _chargingTime = 1f;
+
+        // ì• ë‹ˆë©”ì´ì…˜ ì†ë„ê°€ 0ë³´ë‹¤ ì‘ì•„ì§€ì§€ ì•Šë„ë¡
+        if (_chargingAnimationSpeed <= 0)
+            _chargingAnimationSpeed = 1f;
+    }
 }
