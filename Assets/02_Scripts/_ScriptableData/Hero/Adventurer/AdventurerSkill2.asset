@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c3c4367a718e294a83a473bb036984b, type: 3}
+  m_Name: AdventurerSkill2
+  m_EditorClassIdentifier: 
+  skillName: "\uD5E4\uB4DC\uC0F7"
+  description: "\uD5E4\uB4DC\uC0F7\uC744 \uB178\uB824 500%\uC758 \uD53C\uD574\uB97C
+    \uC785\uD78C\uB2E4. \uC774 \uC2A4\uD0AC\uB85C \uC801\uC744 \uCC98\uCE58\uD558\uBA74
+    \uBAA8\uB4E0 \uC2A4\uD0AC\uC758 \uC7AC\uC0AC\uC6A9 \uB300\uAE30 \uC2DC\uAC04\uC774
+    \uBAA8\uB450 0\uC73C\uB85C \uCD08\uAE30\uD654\uB41C\uB2E4."
+  icon: {fileID: 21300000, guid: 8d95bcf261f259f4786a397bc66e3705, type: 3}
+  cooldown: 7
+  damage: 5
+  range: 7
+  duration: 0
+  effectPrefab: {fileID: 2248836812795275741, guid: e3dc538dbf9512d4f9e6e4ee23796345, type: 3}
+  soundClip: {fileID: 0}
