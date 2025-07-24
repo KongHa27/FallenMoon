@@ -39,5 +39,10 @@ public abstract class InputHandler : MonoBehaviour
     /// 장비 사용 입력 이벤트
     /// </summary>
     public abstract event Action OnUseItemInput;
+
+    /// <summary>
+    /// 상호작용 입력 이벤트
+    /// </summary>
+    public abstract event Action OnInteractionInput;
 }
 
