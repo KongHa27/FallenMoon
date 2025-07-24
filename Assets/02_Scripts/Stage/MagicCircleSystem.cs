@@ -1,44 +1,47 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 /// <summary>
-/// ¸¶¹ıÁø ½Ã½ºÅÛ Å¬·¡½º
+/// ë§ˆë²•ì§„ ì‹œìŠ¤í…œ í´ë˜ìŠ¤
 /// </summary>
 public class MagicCircleSystem : MonoBehaviour
 {
-    [Header("----- ¸¶¹ıÁø ¼³Á¤ -----")]
-    [SerializeField] GameObject _magicCirclePrefab;     //¸¶¹ıÁø ÇÁ¸®ÆÕ
-    [SerializeField] float _chargingTime = 10f;         //ÃæÀü ½Ã°£
+    [Header("----- ì»´í¬ë„ŒíŠ¸ ì°¸ì¡° -----")]
+    [SerializeField] StageManager _stageManager;        //ìŠ¤í…Œì´ì§€ ë§¤ë‹ˆì € ì°¸ì¡°
+    [SerializeField] MagicCircle _magicCircle;          //ë§ˆë²•ì§„ ì»´í¬ë„ŒíŠ¸
 
-    StageManager _stageManager;         //½ºÅ×ÀÌÁö ¸Å´ÏÀú ÂüÁ¶
+    [Header("----- ë§ˆë²•ì§„ ì„¤ì • -----")]
+    [SerializeField] GameObject _magicCirclePrefab;     //ë§ˆë²•ì§„ í”„ë¦¬íŒ¹
 
-    GameObject _magicCircleInstance;    //¸¶¹ıÁø ÀÎ½ºÅÏ½º
-    GameObject _bossInstance;           //º¸½º¸÷ ÀÎ½ºÅÏ½º
-    bool _isCharging = false;           //ÃæÀü ÁßÀÎÁö ¿©ºÎ
-    bool _isCharged = false;            //ÃæÀü ¿Ï·á Çß´ÂÁö ¿©ºÎ
-    bool _isBossDead = false;           //º¸½º°¡ Á×¾ú´ÂÁö ¿©ºÎ
+    GameObject _magicCircleInstance;    //ë§ˆë²•ì§„ ì¸ìŠ¤í„´ìŠ¤
+    GameObject _bossInstance;           //ë³´ìŠ¤ëª¹ ì¸ìŠ¤í„´ìŠ¤
+    StageData _curStageData;            //í˜„ì¬ ìŠ¤í…Œì´ì§€ ë°ì´í„°
+    
+    bool _isCharging = false;           //ì¶©ì „ ì¤‘ì¸ì§€ ì—¬ë¶€
+    bool _isCharged = false;            //ì¶©ì „ ì™„ë£Œ í–ˆëŠ”ì§€ ì—¬ë¶€
+    bool _isBossDead = false;           //ë³´ìŠ¤ê°€ ì£½ì—ˆëŠ”ì§€ ì—¬ë¶€
 
-    public bool CanCompleteStage() => _isCharged && _isBossDead;
-
-    public void Initialize(GameObject bossPrefab, StageManager manager)
+    public void Initialize(StageData data, StageManager manager)
     {
         _stageManager = manager;
+        _curStageData = data;
+
         _isCharging = false;
         _isCharged = false;
         _isBossDead = false;
 
-        //±âÁ¸ ¸¶¹ıÁø°ú º¸½º Á¦°Å
+        //ê¸°ì¡´ ë§ˆë²•ì§„ê³¼ ë³´ìŠ¤ ì œê±°
         if (_magicCircleInstance != null) Destroy(_magicCircleInstance);
         if (_bossInstance != null) Destroy(_bossInstance);
 
-        //¸¶¹ıÁø »ı¼º
+        //ë§ˆë²•ì§„ ìƒì„±
         CreateMagicCircle();
     }
 
     /// <summary>
-    /// ¸¶¹ıÁø »ı¼ºÇÏ´Â ÇÔ¼ö
+    /// ë§ˆë²•ì§„ ìƒì„±í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     void CreateMagicCircle()
     {
@@ -47,73 +50,146 @@ public class MagicCircleSystem : MonoBehaviour
         if (circlePos != Vector3.zero)
         {
             if (_magicCirclePrefab != null)
+            {
+                circlePos.y += 0.5f;
                 _magicCircleInstance = Instantiate(_magicCirclePrefab, circlePos, Quaternion.identity);
+            }
             else
             {
-                Debug.LogError("¸¶¹ıÁø ¼ÒÈ¯ ½ÇÆĞ! ¸¶¹ıÁø ÇÁ¸®ÆÕÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù!!");
+                Debug.LogError("ë§ˆë²•ì§„ ì†Œí™˜ ì‹¤íŒ¨! ë§ˆë²•ì§„ í”„ë¦¬íŒ¹ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤!!");
                 return;
             }
 
-            //¸¶¹ıÁø¿¡ »óÈ£ÀÛ¿ë ÄÄÆ÷³ÍÆ® Ãß°¡
-            MagicCircle magicCircle = _magicCircleInstance.GetComponent<MagicCircle>();
-            if (magicCircle == null)
-                magicCircle = _magicCircleInstance.AddComponent<MagicCircle>();
+            //ë§ˆë²•ì§„ ì»´í¬ë„ŒíŠ¸ ì°¸ì¡°
+            _magicCircle = _magicCircleInstance.GetComponent<MagicCircle>();
+            if (_magicCircle == null)
+                _magicCircle = _magicCircleInstance.AddComponent<MagicCircle>();
 
-            //magicCircle.Initialize(this);
+            //ë§ˆë²•ì§„ ì´ˆê¸°í™”
+            _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
 
-            Debug.Log($"¸¶¹ıÁø »ı¼º ¿Ï·á : {circlePos}");
+            Debug.Log($"ë§ˆë²•ì§„ ìƒì„± ì™„ë£Œ : {circlePos}");
         }
     }
 
     /// <summary>
-    /// ÃæÀüÀ» ½ÃÀÛÇÏ´Â ÇÔ¼ö
+    /// ì¶©ì „ì„ ì‹œì‘í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     public void StartCharging()
     {
         if (_isCharging) return;
 
         _isCharging = true;
-        Debug.Log("¸¶¹ıÁø ÃæÀü ½ÃÀÛ");
+        Debug.Log("ë§ˆë²•ì§„ ì¶©ì „ ì‹œì‘");
 
-        //º¸½º ¼ÒÈ¯
+        if (_magicCircle != null)
+            _magicCircle.SetState(MagicCirclrState.Charging);
+
+        //ë³´ìŠ¤ ì†Œí™˜
         SpawnBoss();
 
-        //ÃæÀü ÄÚ·çÆ¾ ½ÃÀÛ
+        //ì¶©ì „ ì½”ë£¨í‹´ ì‹œì‘
         StartCoroutine(ChargingRoutine());
     }
 
     /// <summary>
-    /// ·£´ı À§Ä¡¿¡ º¸½º¸¦ ¼ÒÈ¯ÇÏ´Â ÇÔ¼ö
+    /// ëœë¤ ìœ„ì¹˜ì— ë³´ìŠ¤ë¥¼ ì†Œí™˜í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     void SpawnBoss()
     {
-        //·£´ı À§Ä¡ ±¸ÇÏ±â
+        //ëœë¤ ìœ„ì¹˜ êµ¬í•˜ê¸°
         Vector3 bossPos = StageManager.Instance.GetRanPosOnGround();
 
         if (bossPos != Vector3.zero)
         {
-            if (_stageManager.CurStage.BossPrefab != null)
-                _bossInstance = Instantiate(_stageManager.CurStage.BossPrefab, bossPos, Quaternion.identity);
+            if (_curStageData.BossPrefab != null)
+                _bossInstance = Instantiate(_curStageData.BossPrefab, bossPos, Quaternion.identity);
+            else
+            {
+                Debug.LogError("ë³´ìŠ¤ ì†Œí™˜ ì‹¤íŒ¨! ë³´ìŠ¤ í”„ë¦¬íŒ¹ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤!!");
+                return;
+            }
         }
-        else
-        {
-            Debug.LogError("º¸½º ¼ÒÈ¯ ½ÇÆĞ! º¸½º ÇÁ¸®ÆÕÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù!!");
-            return;
-        }
+        
 
-        //º¸½º¿¡ º¸½º Ã³Ä¡ ÀÌº¥Æ® ¿¬°á
+        //ë³´ìŠ¤ ì»´í¬ë„ŒíŠ¸ ì°¸ì¡°
         Boss bossComponent = _bossInstance.GetComponent<Boss>();
         if (bossComponent == null)
             bossComponent = _bossInstance.AddComponent<Boss>();
 
+        //ë³´ìŠ¤ì— ë³´ìŠ¤ ì²˜ì¹˜ ì´ë²¤íŠ¸ ì—°ê²°
         bossComponent.OnBossDead += OnBossDead;
 
-        Debug.Log($"º¸½º ¼ÒÈ¯ : {bossPos}");
+        Debug.Log($"ë³´ìŠ¤ ì†Œí™˜ : {bossPos}");
     }
 
+    /// <summary>
+    /// ë§ˆë²•ì§„ì„ ì¶©ì „í•˜ëŠ” ì½”ë£¨í‹´
+    /// </summary>
+    /// <returns></returns>
     IEnumerator ChargingRoutine()
     {
-        float chargingTime = 0f;
-         
+        float chargingTimer = 0f;
+        float chargingTime = _curStageData.ChargingTime;
+
+        while (chargingTimer < chargingTime)
+        {
+            chargingTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        _isCharged = true;
+
+        Debug.Log("ë§ˆë²•ì§„ ì¶©ì „ ì™„ë£Œ");
+
+        if (_magicCircle != null)
+            _magicCircle.SetState(MagicCirclrState.Charged);
+
+        CheckStageCompletion();
+    }
+
+    /// <summary>
+    /// ë³´ìŠ¤ê°€ ì£½ìœ¼ë©´ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
+    /// </summary>
+    public void OnBossDead()
+    {
+        _isBossDead = true;
+
+        Debug.Log("ë³´ìŠ¤ ì²˜ì¹˜!!");
+
+        CheckStageCompletion();
+    }
+
+    /// <summary>
+    /// ìŠ¤í…Œì´ì§€ë¥¼ ì™„ë£Œ í–ˆëŠ”ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
+    /// ì™„ë£Œ ì¡°ê±´ : ë§ˆë²•ì§„ ì¶©ì „ ì™„ë£Œ && ë³´ìŠ¤ ì²˜ì¹˜
+    /// </summary>
+    void CheckStageCompletion()
+    {
+        if (_isCharged && _isBossDead)
+        {
+            Debug.Log("ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ ì¡°ê±´ ë‹¬ì„±! ë§ˆë²•ì§„ê³¼ ìƒí˜¸ì‘ìš©í•˜ì„¸ìš”.");
+            //ì¡°ê±´ ì¶©ì¡± í›„ ë§ˆë²•ì§„ê³¼ ìƒí˜¸ì‘ìš© ì‹œ ì‹¤í–‰í•  ê²ƒë“¤
+        }
+    }
+
+    /// <summary>
+    /// ìŠ¤í…Œì´ì§€ë¥¼ ì™„ë£Œí•  ìˆ˜ ìˆëŠ”ì§€ ì—¬ë¶€
+    /// </summary>
+    /// <returns></returns>
+    public bool CanCompleteStage()
+    {
+        return _isCharged && _isBossDead;
+    }
+
+    /// <summary>
+    /// ìŠ¤í…Œì´ì§€ ì™„ë£Œ ì‹œ í˜¸ì¶œí•  í•¨ìˆ˜
+    /// </summary>
+    public void CompleteStage()
+    {
+        if (CanCompleteStage())
+            _stageManager.CompleteStage();
+        else
+            Debug.Log("ì•„ì§ ìŠ¤í…Œì´ì§€ë¥¼ í´ë¦¬ì–´í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
     }
 }
