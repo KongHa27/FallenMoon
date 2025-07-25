@@ -14,6 +14,7 @@ public class InputManager : InputHandler
     public override event Action OnSkill2Input;
     public override event Action OnMoveSkillInput;
     public override event Action OnUseItemInput;
+    public override event Action OnInteractionInput;
 
     Vector2 _moveInput;
 
@@ -44,5 +45,8 @@ public class InputManager : InputHandler
 
         if (Input.GetButtonDown("UseItem"))
             OnUseItemInput?.Invoke();
+
+        if (Input.GetButtonDown("Interaction"))
+            OnInteractionInput?.Invoke();
     }
 }

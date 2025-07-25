@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -16,6 +17,9 @@ public class StageManager : MonoBehaviour
 
     [Header("----- UI -----")]
     [SerializeField] GameObject _stageUI;
+    [SerializeField] TextMeshProUGUI _stageNameTMP;
+    [SerializeField] TextMeshProUGUI _mapNameTMP;
+    [SerializeField] float _fadeDuration = 1.5f;
 
     MagicCircleSystem _magicCircleSystem;       //마법진 시스템 참조
 
@@ -89,8 +93,10 @@ public class StageManager : MonoBehaviour
 
         //맵 생성
         _curMapInstance = Instantiate(selectedMap);
-
         Debug.Log($"스테이지 {stageIndex + 1} 시작, 맵 {ranMapIndex + 1} 선택");
+
+        //UI 표시
+        StartCoroutine(SetStageUIRoutine(stageIndex, selectedMap));
 
         //플레이어 랜덤 위치 스폰
         StartCoroutine(SpawnPlayerRoutine());
@@ -140,7 +146,7 @@ public class StageManager : MonoBehaviour
         }
 
         //마법진 시스템 초기화
-        _magicCircleSystem.Initialize(data, this);
+        _magicCircleSystem.Initialize(data, this, _player.GetComponent<Hero>());
     }
 
     /// <summary>
@@ -213,5 +219,51 @@ public class StageManager : MonoBehaviour
             StartStage(stageIndex);
         else
             Debug.LogWarning($"잘못된 스테이지 인덱스 {stageIndex}");
+    }
+
+    IEnumerator SetStageUIRoutine(int stageIndex, GameObject selectedMap)
+    {
+        //맵 생성 대기
+        yield return new WaitForEndOfFrame();
+
+        // 알파값 초기화
+        SetTextAlpha(_stageNameTMP, 1f);
+        SetTextAlpha(_mapNameTMP, 1f);
+
+        _stageNameTMP.text = $"Stage {stageIndex}. {_stageDatas[stageIndex].StageName}";
+        _mapNameTMP.text = selectedMap.name;
+
+        _stageUI.SetActive(true);
+
+        yield return new WaitForSeconds(1f);
+
+        StartCoroutine(FadeOutText(_stageNameTMP));
+        StartCoroutine(FadeOutText(_mapNameTMP));
+
+        yield return new WaitForSeconds(_fadeDuration);
+
+        _stageUI.SetActive(false);
+    }
+
+    void SetTextAlpha(TextMeshProUGUI text, float alpha)
+    {
+        var c = text.color;
+        text.color = new Color(c.r, c.g, c.b, alpha);
+    }
+
+    IEnumerator FadeOutText(TextMeshProUGUI text)
+    {
+        float elapsed = 0f;
+        Color startColor = text.color;
+
+        while (elapsed < _fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / _fadeDuration);
+            text.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            yield return null;
+        }
+
+        text.color = new Color(startColor.r, startColor.g, startColor.b, 0f); // 완전히 투명하게
     }
 }

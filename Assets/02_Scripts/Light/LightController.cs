@@ -79,7 +79,7 @@ public class LightController : MonoBehaviour
     void InitializeLightSystem()
     {
         _curGauge = _maxGauge / 2;
-        _curSize = _maxSize / 2;
+        SetLightSize();
         _isLightOn = true;
         _hitTimer = 0;
 
@@ -191,7 +191,7 @@ public class LightController : MonoBehaviour
     /// </summary>
     void SetLightSize()
     {
-        float ratio = _curGauge / _maxGauge;
+        float ratio = GetGaugeRatio();
 
         _curSize = Mathf.Min(_maxSize * ratio, _maxSize);
 

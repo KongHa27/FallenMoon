@@ -11,6 +11,7 @@ public class MagicCircleSystem : MonoBehaviour
     [Header("----- 컴포넌트 참조 -----")]
     [SerializeField] StageManager _stageManager;        //스테이지 매니저 참조
     [SerializeField] MagicCircle _magicCircle;          //마법진 컴포넌트
+    [SerializeField] Hero _hero;
 
     [Header("----- 마법진 설정 -----")]
     [SerializeField] GameObject _magicCirclePrefab;     //마법진 프리팹
@@ -23,10 +24,11 @@ public class MagicCircleSystem : MonoBehaviour
     bool _isCharged = false;            //충전 완료 했는지 여부
     bool _isBossDead = false;           //보스가 죽었는지 여부
 
-    public void Initialize(StageData data, StageManager manager)
+    public void Initialize(StageData data, StageManager manager, Hero hero)
     {
         _stageManager = manager;
         _curStageData = data;
+        _hero = hero;
 
         _isCharging = false;
         _isCharged = false;
@@ -102,6 +104,7 @@ public class MagicCircleSystem : MonoBehaviour
 
         if (bossPos != Vector3.zero)
         {
+            bossPos.y += 2f;
             if (_curStageData.BossPrefab != null)
                 _bossInstance = Instantiate(_curStageData.BossPrefab, bossPos, Quaternion.identity);
             else
@@ -154,8 +157,10 @@ public class MagicCircleSystem : MonoBehaviour
     public void OnBossDead()
     {
         _isBossDead = true;
-
         Debug.Log("보스 처치!!");
+
+        if (_hero != null)
+            _hero.AddLightGauge(35f);
 
         CheckStageCompletion();
     }

@@ -8,6 +8,7 @@ public class PlayScene : MonoBehaviour
     [Header("----- 컴포넌트 참조 -----")]
     [SerializeField] InputHandler _inputHandler;
     [SerializeField] Hero _hero;
+    [SerializeField] InteractionManager _interactionManager;
 
     // Start is called before the first frame update
     void Start()
@@ -22,8 +23,11 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnSkill1Input += OnSkill1Input;
         _inputHandler.OnSkill2Input += OnSkill2Input;
         _inputHandler.OnMoveSkillInput += OnMoveSkillInput;
+        //상호작용 입력 이벤트 구독
+        _inputHandler.OnInteractionInput += OnInteractionInput;
 
         _hero.Initialize();
+        _interactionManager.Initialize(_hero);
 
     }
 
@@ -55,5 +59,10 @@ public class PlayScene : MonoBehaviour
     void OnMoveSkillInput()
     {
         _hero.UseMoveSkill();
+    }
+
+    void OnInteractionInput()
+    {
+        _interactionManager.TryInteract();
     }
 }

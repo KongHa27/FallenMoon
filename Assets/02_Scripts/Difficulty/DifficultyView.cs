@@ -15,9 +15,6 @@ public class DifficultyView : MonoBehaviour
     [SerializeField] Image _erosionGaugeBar;                 // 침식도 게이지 바 이미지 (fillAmount 사용)
     [SerializeField] Gradient _erosionGaugeGradient;         // 침식도에 따른 색상 그라데이션
 
-    [Header("----- 게이지 바 설정 -----")]
-    [SerializeField] float _maxErosionLevel = 25f;           // 최대 단계 (레벨 25부터 종말)
-
     // 플레이 타임 관련
     float _gameStartTime;
 
