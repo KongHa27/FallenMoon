@@ -10,6 +10,8 @@ public class HeroStatusView : MonoBehaviour
     [SerializeField] TextMeshProUGUI _hpText;
     [SerializeField] TextMeshProUGUI _levelText;
     [SerializeField] Image _expBar;
+    [SerializeField] Image _lightGaugeBar;
+    [SerializeField] TextMeshProUGUI _lightGaugeText;
 
     public void SetGoldText(int gold)
     {
@@ -29,5 +31,11 @@ public class HeroStatusView : MonoBehaviour
     public void SetLevelText(int level)
     {
         _levelText.text = $"{level + 1}";
+    }
+
+    public void SetLightGauge(float ratio)
+    {
+        _lightGaugeBar.fillAmount = ratio;
+        _lightGaugeText.text = $"{ratio * 100}%";
     }
 }

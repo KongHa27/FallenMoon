@@ -175,8 +175,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e647acd08146c149a16aef606e3cbb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _magicCircleSystem: {fileID: 0}
   _renderer: {fileID: 6313288827947622685}
+  _collider: {fileID: 7660025013594229920}
+  _objectType: 0
+  _objectName: 
+  _sprite: {fileID: 0}
+  _canInteract: 1
+  _destroyAfterInteraction: 0
+  _interactionCooldown: 0
+  _magicCircleSystem: {fileID: 0}
   _stateSprites:
   - {fileID: 21300000, guid: 94bb60b8383cadc4e86dc2cae603022c, type: 2}
   - {fileID: 21300000, guid: b7e242631f5e28944816c28fc853ada2, type: 2}

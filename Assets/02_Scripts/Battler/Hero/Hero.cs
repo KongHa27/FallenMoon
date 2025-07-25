@@ -78,6 +78,7 @@ public class Hero : MonoBehaviour, ILadderUser
 
         _jumper.OnJumpStateChanged += OnJumpStateChanged;
 
+        //UI
         _model.OnHpChanged += _statusView.SetHpText;
         _model.OnGoldChanged += _statusView.SetGoldText;
         _model.OnExpChanged += _statusView.SetExpBar;
@@ -103,6 +104,7 @@ public class Hero : MonoBehaviour, ILadderUser
     private void Update()
     {
         UpdateFacingDirection();
+        _statusView.SetLightGauge(_light.GetGaugeRatio());
     }
 
     #region --------- 이동 ----------
@@ -366,5 +368,14 @@ public class Hero : MonoBehaviour, ILadderUser
     public void AddGold(int amount)
     {
         _model.AddGold(amount);
+    }
+
+    /// <summary>
+    /// 광원 게이지를 추가하는 함수
+    /// </summary>
+    /// <param name="amount"></param>
+    public void AddLightGauge(float amount)
+    {
+        _light.AddGauge(amount);
     }
 }
