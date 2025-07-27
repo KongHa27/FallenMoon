@@ -11,6 +11,7 @@ public class ObjectSystem : MonoBehaviour
     [SerializeField] StageManager _stageManager;
 
     [Header("----- 오브젝트 프리팹 -----")]
+    [SerializeField] GameObject _magicCirclePrefab; // 마법진 프리팹
     [SerializeField] GameObject _urnPrefab;      // 항아리 프리팹
     [SerializeField] GameObject _chestPrefab;    // 상자 프리팹
     [SerializeField] GameObject _altarPrefab;    // 제단 프리팹
@@ -26,6 +27,7 @@ public class ObjectSystem : MonoBehaviour
 
     List<GameObject> _spawnedObjects = new List<GameObject>();
     List<Vector3> _usedPositions = new List<Vector3>();
+    GameObject _magicCircleInstance;
 
     public static ObjectSystem Instance { get; private set; }
 
@@ -73,8 +75,11 @@ public class ObjectSystem : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(0.1f);
 
-        //기존 오브젝트들 및 사용 좌표 초기화(제거)
+        // 기존 오브젝트들 및 사용 좌표 초기화(제거)
         ClearObjects();
+
+        // 마법진 가장 먼저 생성
+        SpawnMagicCircle();
 
         // 각 오브젝트 타입별로 스폰
         SpawnObjects(ObjectType.Urn, Random.Range(_minUrns, _maxUrns + 1));
@@ -84,6 +89,41 @@ public class ObjectSystem : MonoBehaviour
         Debug.Log($"오브젝트 스폰 완료: 항아리 {_spawnedObjects.FindAll(o => o.GetComponent<InteractableObjects>()?.ObjectType == ObjectType.Urn).Count}개, " +
                   $"상자 {_spawnedObjects.FindAll(o => o.GetComponent<InteractableObjects>()?.ObjectType == ObjectType.Chest).Count}개, " +
                   $"제단 {_spawnedObjects.FindAll(o => o.GetComponent<InteractableObjects>()?.ObjectType == ObjectType.Altar).Count}개");
+    }
+
+    /// <summary>
+    /// 마법진을 생성하는 함수
+    /// </summary>
+    void SpawnMagicCircle()
+    {
+        if (_magicCirclePrefab == null)
+        {
+            Debug.LogError("마법진 프리팹이 설정되지 않았습니다.");
+            return;
+        }
+
+        Vector3 spawnPos = GetValidSpawnPosition();
+        if (spawnPos != Vector3.zero)
+        {
+            spawnPos.y += 1f;
+
+            _magicCircleInstance = Instantiate(_magicCirclePrefab, spawnPos, Quaternion.identity);
+            _spawnedObjects.Add(_magicCircleInstance);
+            _usedPositions.Add(spawnPos);
+
+            Debug.Log($"마법진 스폰: {spawnPos}");
+
+            // 마법진 시스템에게 초기화 요청
+            MagicCircleSystem magicCircleSystem = FindObjectOfType<MagicCircleSystem>();
+            if (magicCircleSystem != null)
+            {
+                magicCircleSystem.OnMagicCircleCreated(_magicCircleInstance);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("마법진 스폰 실패: 적절한 위치를 찾을 수 없습니다.");
+        }
     }
 
     /// <summary>
@@ -172,7 +212,7 @@ public class ObjectSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 기존 오브젝트들을 정리하는 함수
+    /// 기존 오브젝트들을 제거하는 함수
     /// </summary>
     void ClearObjects()
     {
@@ -184,6 +224,7 @@ public class ObjectSystem : MonoBehaviour
 
         _spawnedObjects.Clear();
         _usedPositions.Clear();
+        _magicCircleInstance = null;
     }
 
     /// <summary>
@@ -194,6 +235,9 @@ public class ObjectSystem : MonoBehaviour
     {
         _spawnedObjects.Remove(destroyedObject);
 
+        if (destroyedObject == _magicCircleInstance)
+            _magicCircleInstance = null;
+
         // 해당 오브젝트의 위치도 사용된 위치 목록에서 제거
         InteractableObjects interactable = destroyedObject.GetComponent<InteractableObjects>();
         if (interactable != null)
@@ -201,6 +245,11 @@ public class ObjectSystem : MonoBehaviour
             Vector3 objPos = destroyedObject.transform.position;
             _usedPositions.RemoveAll(pos => Vector3.Distance(pos, objPos) < 0.1f);
         }
+    }
+
+    public GameObject GetMagicCircleInstance()
+    {
+        return _magicCircleInstance;
     }
 
     private void OnDestroy()

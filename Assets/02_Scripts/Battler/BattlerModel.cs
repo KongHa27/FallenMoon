@@ -19,7 +19,7 @@ public class BattlerModel : MonoBehaviour, IDamageable, IAttackable
     [SerializeField] protected float _amor;
 
     [Header("----- 캔버스 뷰 -----")]
-    [SerializeField] Image _hpBar;
+    [SerializeField] protected Image _hpBar;
 
     public event Action OnAttacked;
     public event Action<float, float> OnHpChanged;

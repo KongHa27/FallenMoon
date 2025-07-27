@@ -10,15 +10,6 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] float _baseSpawnInterval;                  //스폰 간격
     [SerializeField] int _maxEnemyCount;                        //최대 적 수
 
-    [Header("----- 맵 설정 -----")]
-    [SerializeField] Vector2 _mapSize = new Vector2(80f, 40f);  //맵 크기
-    [SerializeField] Vector2 _mapCenter = Vector2.zero;         //맵 중앙
-    [SerializeField] float _spawnRadius;                        //스폰 체크 반경
-    [SerializeField] int _maxSpawnAttempts;                     //최대 스폰 시도 횟수
-
-    [Header("----- 타일맵 설정 -----")]
-    [SerializeField] Tilemap _ground;                           //Ground 타일맵 참조
-
     [Header("----- 레벨별 스폰 조정 -----")]
     [SerializeField] float _spawnIntervalDecreaseRate;     // 스폰 간격 감소율(레벨당)
     [SerializeField] float _minSpawnInterval;              // 최소 스폰 간격
@@ -117,8 +108,8 @@ public class EnemySpawner : MonoBehaviour
         // 랜덤 적 선택
         GameObject enemyPrefab = _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
 
-        // 랜덤 스폰 위치 선택      
-        Vector3 spawnPos = GetRandomSpawnPos();
+        // 랜덤 스폰 위치      
+        Vector3 spawnPos = StageManager.Instance?.GetRanPosOnGround() ?? Vector3.zero;
 
         // 적 생성
         if (spawnPos == Vector3.zero)
@@ -144,49 +135,6 @@ public class EnemySpawner : MonoBehaviour
             //활성화된 적 리스트에 추가
             _activeEnemies.Add(enemy);
         }
-    }
-
-    /// <summary>
-    /// 맵 내 랜덤 스폰 위치 생성
-    /// </summary>
-    /// <returns></returns>
-    Vector3 GetRandomSpawnPos()
-    {
-        for (int i = 0; i < _maxSpawnAttempts; i++)
-        {
-            // 맵 범위 내에서 랜덤 위치 생성
-            float randomX = Random.Range(_mapCenter.x - _mapSize.x / 2f, _mapCenter.x + _mapSize.x / 2f);
-            float randomY = Random.Range(_mapCenter.y - _mapSize.y / 2f, _mapCenter.y + _mapSize.y / 2f);
-
-            Vector3 candidatePosition = new Vector3(randomX, randomY, 0f);
-
-            // 해당 위치가 스폰 가능한지 확인
-            if (IsValidSpawnPosition(candidatePosition))
-            {
-                return candidatePosition;
-            }
-        }
-
-        // 유효한 위치를 찾지 못한 경우 Vector3.zero 반환
-        return Vector3.zero;
-    }
-
-    /// <summary>
-    /// 스폰 위치가 유효한지 확인
-    /// </summary>
-    bool IsValidSpawnPosition(Vector3 position)
-    {
-        // Ground 타일맵에 타일이 있는지 확인
-        if (_ground != null)
-        {
-            Vector3Int cellPosition = _ground.WorldToCell(position);
-            if (!_ground.HasTile(cellPosition))
-            {
-                return false; // Ground 타일이 없으면 스폰 불가
-            }
-        }
-
-        return true;
     }
 
     /// <summary>

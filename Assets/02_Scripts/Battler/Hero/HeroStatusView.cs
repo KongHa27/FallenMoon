@@ -36,6 +36,6 @@ public class HeroStatusView : MonoBehaviour
     public void SetLightGauge(float ratio)
     {
         _lightGaugeBar.fillAmount = ratio;
-        _lightGaugeText.text = $"{ratio * 100}%";
+        _lightGaugeText.text = $"{(ratio * 100).ToString("F0")}%";
     }
 }

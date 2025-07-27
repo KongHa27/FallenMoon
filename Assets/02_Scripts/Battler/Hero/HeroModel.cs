@@ -31,6 +31,11 @@ public class HeroModel : BattlerModel
 
     public int Gold => _gold;
 
+    private void Start()
+    {
+        _hpBar = GameObject.Find("HpBar").GetComponent<Image>();
+    }
+
     /// <summary>
     /// 런타임 데이터 초기화
     /// </summary>
@@ -62,7 +67,7 @@ public class HeroModel : BattlerModel
 
 
     /// <summary>
-    /// 체력 재생 코루틴
+    /// 기본 체력 재생 코루틴
     /// </summary>
     /// <returns></returns>
     private IEnumerator RegenHpCoroutine()
@@ -177,6 +182,15 @@ public class HeroModel : BattlerModel
     }
 
     /// <summary>
+    /// 추가 체력 재생
+    /// </summary>
+    /// <param name="amount"></param>
+    public void AddHpRegen(float amount)
+    {
+        _hpRegen += amount;
+    }
+
+    /// <summary>
     /// 힐 함수
     /// </summary>
     /// <param name="amount"></param>
@@ -198,6 +212,16 @@ public class HeroModel : BattlerModel
         _moveSpeed += amount;
 
         OnSpeedChanged?.Invoke(_moveSpeed);
+    }
+
+    /// <summary>
+    /// 추가 점프력을 적용하는 함수
+    /// </summary>
+    /// <param name="amount"></param>
+    public void AddJumpPower(float amount)
+    {
+        _jumpPower += amount;
+        OnPowerChanged?.Invoke(_jumpPower);
     }
     #endregion
 }

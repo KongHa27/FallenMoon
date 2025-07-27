@@ -46,6 +46,9 @@ public class StageManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
+
+        GameObject defaultMap = GameObject.Find("Grid");
+        Destroy(defaultMap);
     }
 
     private void Start()
@@ -96,7 +99,7 @@ public class StageManager : MonoBehaviour
         Debug.Log($"스테이지 {stageIndex + 1} 시작, 맵 {ranMapIndex + 1} 선택");
 
         //UI 표시
-        StartCoroutine(SetStageUIRoutine(stageIndex, selectedMap));
+        StartCoroutine(SetStageUIRoutine(stageIndex, ranMapIndex));
 
         //플레이어 랜덤 위치 스폰
         StartCoroutine(SpawnPlayerRoutine());
@@ -221,7 +224,13 @@ public class StageManager : MonoBehaviour
             Debug.LogWarning($"잘못된 스테이지 인덱스 {stageIndex}");
     }
 
-    IEnumerator SetStageUIRoutine(int stageIndex, GameObject selectedMap)
+    /// <summary>
+    /// 스테이지UI 텍스트를 표시하는 코루틴
+    /// </summary>
+    /// <param name="stageIndex"></param>
+    /// <param name="selectedMap"></param>
+    /// <returns></returns>
+    IEnumerator SetStageUIRoutine(int stageIndex, int mapIndex)
     {
         //맵 생성 대기
         yield return new WaitForEndOfFrame();
@@ -231,7 +240,7 @@ public class StageManager : MonoBehaviour
         SetTextAlpha(_mapNameTMP, 1f);
 
         _stageNameTMP.text = $"Stage {stageIndex}. {_stageDatas[stageIndex].StageName}";
-        _mapNameTMP.text = selectedMap.name;
+        _mapNameTMP.text = _stageDatas[stageIndex].MapNames[mapIndex];
 
         _stageUI.SetActive(true);
 

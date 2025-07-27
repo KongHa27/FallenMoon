@@ -114,22 +114,22 @@ public class HeroSkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     /// <summary>
     /// 쿨다운 UI 업데이트 (공통)
     /// </summary>
-    /// <param name="currentCooldown">현재 쿨다운</param>
+    /// <param name="curCooldown">현재 쿨다운</param>
     /// <param name="maxCooldown">최대 쿨다운</param>
-    void UpdateCooldownUI(float currentCooldown, float maxCooldown)
+    void UpdateCooldownUI(float curCooldown, float maxCooldown)
     {
         // 쿨다운 fillAmount 업데이트
         if (_cooldownFill != null && maxCooldown > 0)
         {
-            _cooldownFill.fillAmount = currentCooldown / maxCooldown;
+            _cooldownFill.fillAmount = curCooldown / maxCooldown;
         }
 
         // 쿨다운 텍스트 업데이트
         if (_cooldownText != null)
         {
-            if (currentCooldown > 0)
+            if (curCooldown > 0)
             {
-                _cooldownText.text = currentCooldown.ToString("F1");
+                _cooldownText.text = curCooldown.ToString("F1");
                 _cooldownText.gameObject.SetActive(true);
             }
             else

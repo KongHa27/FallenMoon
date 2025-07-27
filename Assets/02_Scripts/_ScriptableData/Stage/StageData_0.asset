@@ -17,4 +17,9 @@ MonoBehaviour:
   _mapPrefabs:
   - {fileID: 6222822166435325640, guid: 754c619d51c52dd4488abd630bb90506, type: 3}
   - {fileID: 6222822166435325640, guid: f15929210f8f25f44b209f107bc41052, type: 3}
+  _mapNames:
+  - 
+  - 
   _bossPrefab: {fileID: 8719530476096001677, guid: f4f213d2b8f5ea34eb24fe903aebe467, type: 3}
+  _chargingTime: 10
+  _chargingAnimationSpeed: 2

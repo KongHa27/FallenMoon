@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a054ab590dc8ff74fab5b2f45ab832d7, type: 3}
+  m_Name: StageData_1
+  m_EditorClassIdentifier: 
+  _stageNumber: 1
+  _stageName: "\uC78A\uD600\uC9C4 \uC232\uC758 \uC2E0\uC804"
+  _mapPrefabs:
+  - {fileID: 6222822166435325640, guid: 576fa0dc554ce0643ae6b6b7aa2c6606, type: 3}
+  - {fileID: 6222822166435325640, guid: c7c7e8c8148931e4ebb4973b408a7363, type: 3}
+  - {fileID: 6222822166435325640, guid: 883decc4cac562a48ae275367c67e6ea, type: 3}
+  _mapNames:
+  - "\uC78A\uD600\uC9C4 \uC232_1"
+  - "\uC78A\uD600\uC9C4 \uC232_2"
+  - "\uC78A\uD600\uC9C4 \uC232_3"
+  _bossPrefab: {fileID: 8719530476096001677, guid: f4f213d2b8f5ea34eb24fe903aebe467, type: 3}
+  _chargingTime: 10
+  _chargingAnimationSpeed: 2

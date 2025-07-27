@@ -171,12 +171,36 @@ public class MagicCircle : InteractableObjects
 
     public override string GetInteractionText()
     {
+        // 아직 충전을 시작하지 않은 경우
         if (!_hasStartedCharging)
+        {
             return "[E] 마법진 충전 시작";
-        else if (_magicCircleSystem.CanCompleteStage())
-            return "[E] 다음 스테이지로 이동";
-        else
-            return "[E] 충전 중... (보스를 처치하세요)";
+        }
+
+        // 충전을 시작한 경우 - 현재 상태와 보스 처치 여부에 따라 분기
+        switch (_curState)
+        {
+            case MagicCirclrState.Charging:
+                // 충전 중인 경우
+                return "[E] 충전 중... (보스를 처치하세요)";
+
+            case MagicCirclrState.Charged:
+                // 충전이 완료된 경우
+                if (_magicCircleSystem.CanCompleteStage())
+                {
+                    // 충전 완료 + 보스 처치 완료
+                    return "[E] 다음 스테이지로 이동";
+                }
+                else
+                {
+                    // 충전 완료했지만 보스를 아직 처치하지 않음
+                    return "[E] 보스를 처치하세요";
+                }
+
+            default:
+                // 기본값 (Idle 상태 등)
+                return "[E] 마법진과 상호작용";
+        }
     }
 
     public override bool CanInteract

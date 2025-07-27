@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb153abad0da41c409619c8a3b0640d2, type: 3}
+  m_Name: ItemData_Use_0
+  m_EditorClassIdentifier: 
+  _itemType: 1
+  _rarity: 0
+  _itemName: "\uB5A8\uC5B4\uC9C4 \uC554\uBE0C\uB85C\uC2DC\uC544"
+  _description: "\uCCB4\uB825\uC758 \uC808\uBC18\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  _icon: {fileID: 21300000, guid: b5aca910e46d94b4785677247728d376, type: 3}
+  _effectType: 0
+  _effectValue: 50
+  _isPercentage: 1
+  _specialEffectID: 
+  _usableEffectType: 0
+  _cooldown: 45
+  _duration: 0
+  _range: 0

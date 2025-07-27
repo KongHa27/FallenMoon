@@ -11,7 +11,7 @@ public class AdventurerSkill2 : SkillBase
 
     public AdventurerSkill2(SkillData data, Transform caster) : base(data, caster)
     {
-        _skillManager = caster.GetComponent<SkillManager>();
+        _skillManager = caster.GetComponentInChildren<SkillManager>();
     }
 
     protected override void ExecuteSkill()
@@ -58,7 +58,7 @@ public class AdventurerSkill2 : SkillBase
     /// </summary>
     float GetDamage()
     {
-        BattlerModel casterModel = _caster.GetComponent<BattlerModel>();
+        BattlerModel casterModel = _caster.GetComponentInChildren<BattlerModel>();
         if (casterModel != null)
         {
             return casterModel.GetDamage() * _data.damage; // _data.damage = 5.0f (500%)

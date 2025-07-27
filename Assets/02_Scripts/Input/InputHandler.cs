@@ -36,6 +36,11 @@ public abstract class InputHandler : MonoBehaviour
     public abstract event Action OnMoveSkillInput;
 
     /// <summary>
+    /// 장비 줍기 입력 이벤트
+    /// </summary>
+    public abstract event Action OnPickupUseItemInput;
+
+    /// <summary>
     /// 장비 사용 입력 이벤트
     /// </summary>
     public abstract event Action OnUseItemInput;

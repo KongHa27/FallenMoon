@@ -13,6 +13,7 @@ public class InputManager : InputHandler
     public override event Action OnSkill1Input;
     public override event Action OnSkill2Input;
     public override event Action OnMoveSkillInput;
+    public override event Action OnPickupUseItemInput;
     public override event Action OnUseItemInput;
     public override event Action OnInteractionInput;
 
@@ -42,6 +43,9 @@ public class InputManager : InputHandler
 
         if (Input.GetButtonDown("MoveSkill"))
             OnMoveSkillInput?.Invoke();
+
+        if (Input.GetButtonDown("PickupItem"))
+            OnPickupUseItemInput?.Invoke();
 
         if (Input.GetButtonDown("UseItem"))
             OnUseItemInput?.Invoke();

@@ -6,19 +6,23 @@ using UnityEngine;
 public class Hero : MonoBehaviour, ILadderUser
 {
     [Header("----- 컴포넌트 참조 -----")]
-    [SerializeField] HeroModel _model;
     [SerializeField] Mover _mover;
     [SerializeField] Jumper _jumper;
     [SerializeField] LadderMover _ladderMover;
+    [SerializeField] LightController _light;
+
+    [Header("----- 프리팹 컴포넌트 참조 -----")]
+    [SerializeField] HeroModel _model;
     [SerializeField] SpriteRenderer _renderer;
     [SerializeField] Animator _animator;
-    [SerializeField] LightController _light;
     [SerializeField] SkillManager _skillManager;
     [SerializeField] AttackSystem _attackSystem;
 
-
     [Header("----- 사다리 설정 -----")]
     [SerializeField] LadderUserState _ladderState = new LadderUserState();
+
+    [Header("----- 아이템 시스템 -----")]
+    [SerializeField] PlayerInventory _inventory;
 
     [Header("----- UI -----")]
     [SerializeField] HeroStatusView _statusView;
@@ -63,14 +67,47 @@ public class Hero : MonoBehaviour, ILadderUser
         remove => _skillManager.OnSkillCooldownChanged -= value;
     }
 
+
+    public void InitializeWithPrefab()
+    {
+        _model = GetComponentInChildren<HeroModel>();
+        _renderer = GetComponentInChildren<SpriteRenderer>();
+        _animator = GetComponentInChildren<Animator>();
+        _skillManager = GetComponentInChildren<SkillManager>();
+        _attackSystem = GetComponentInChildren<AttackSystem>();
+
+        if (_model == null)
+        {
+            Debug.LogError("HeroModel을 찾을 수 없습니다!");
+            return;
+        }
+
+        if (_renderer == null)
+        {
+            Debug.LogError("SpriteRenderer를 찾을 수 없습니다!");
+            return;
+        }
+
+        if (_skillManager == null)
+        {
+            Debug.LogError("SkillManager를 찾을 수 없습니다!");
+            return;
+        }
+
+        Initialize();
+    }
+
     /// <summary>
     /// Hero 초기화
     /// </summary>
-    public void Initialize()
+    void Initialize()
     {
         _camera = Camera.main;
         if (_camera == null)
             _camera = FindAnyObjectByType<Camera>();
+
+        if (_inventory == null)
+            _inventory = GetComponent<PlayerInventory>();
 
         _model.OnSpeedChanged += _mover.SetSpeed;
         _model.OnPowerChanged += _jumper.SetPower;
@@ -309,6 +346,16 @@ public class Hero : MonoBehaviour, ILadderUser
         return _skillManager.GetSkill(skillType);
     }
     #endregion
+
+    public void UseUsableItem()
+    {
+        _inventory.UseEquippedItem();
+    }
+
+    public PlayerInventory GetInventory()
+    {
+        return _inventory;
+    }
 
     /// <summary>
     /// 공격할 때 실행되는 함수

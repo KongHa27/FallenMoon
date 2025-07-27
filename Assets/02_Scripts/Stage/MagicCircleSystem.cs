@@ -13,9 +13,6 @@ public class MagicCircleSystem : MonoBehaviour
     [SerializeField] MagicCircle _magicCircle;          //마법진 컴포넌트
     [SerializeField] Hero _hero;
 
-    [Header("----- 마법진 설정 -----")]
-    [SerializeField] GameObject _magicCirclePrefab;     //마법진 프리팹
-
     GameObject _magicCircleInstance;    //마법진 인스턴스
     GameObject _bossInstance;           //보스몹 인스턴스
     StageData _curStageData;            //현재 스테이지 데이터
@@ -34,44 +31,62 @@ public class MagicCircleSystem : MonoBehaviour
         _isCharged = false;
         _isBossDead = false;
 
-        //기존 마법진과 보스 제거
-        if (_magicCircleInstance != null) Destroy(_magicCircleInstance);
+        //기존 보스 제거
         if (_bossInstance != null) Destroy(_bossInstance);
 
         //마법진 생성
-        CreateMagicCircle();
+        StartCoroutine(FindAndInitializeMagicCircle());
     }
 
     /// <summary>
-    /// 마법진 생성하는 함수
+    /// ObjectSystem에서 생성된 마법진을 찾아서 초기화하는 코루틴
     /// </summary>
-    void CreateMagicCircle()
+    /// <returns></returns>
+    IEnumerator FindAndInitializeMagicCircle()
     {
-        Vector3 circlePos = StageManager.Instance.GetRanPosOnGround();
+        // ObjectSystem에서 마법진 생성을 기다림
+        yield return new WaitForSeconds(0.2f);
 
-        if (circlePos != Vector3.zero)
+        ObjectSystem objectSystem = ObjectSystem.Instance;
+        if (objectSystem != null)
         {
-            if (_magicCirclePrefab != null)
+            _magicCircleInstance = objectSystem.GetMagicCircleInstance();
+            if (_magicCircleInstance != null)
             {
-                circlePos.y += 0.5f;
-                _magicCircleInstance = Instantiate(_magicCirclePrefab, circlePos, Quaternion.identity);
+                //마법진 컴포넌트 참조
+                _magicCircle = _magicCircleInstance.GetComponent<MagicCircle>();
+                if (_magicCircle == null)
+                    _magicCircle = _magicCircleInstance.AddComponent<MagicCircle>();
+
+                //마법진 초기화
+                _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
+
+                Debug.Log("마법진 시스템 초기화 완료");
             }
             else
             {
-                Debug.LogError("마법진 소환 실패! 마법진 프리팹이 존재하지 않습니다!!");
-                return;
+                Debug.LogError("ObjectSystem에서 생성된 마법진을 찾을 수 없습니다!");
             }
-
-            //마법진 컴포넌트 참조
-            _magicCircle = _magicCircleInstance.GetComponent<MagicCircle>();
-            if (_magicCircle == null)
-                _magicCircle = _magicCircleInstance.AddComponent<MagicCircle>();
-
-            //마법진 초기화
-            _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
-
-            Debug.Log($"마법진 생성 완료 : {circlePos}");
         }
+    }
+
+    /// <summary>
+    /// ObjectSystem에서 마법진이 생성되었을 때 호출되는 함수
+    /// </summary>
+    /// <param name="magicCircleInstance"></param>
+    public void OnMagicCircleCreated(GameObject magicCircleInstance)
+    {
+        _magicCircleInstance = magicCircleInstance;
+
+        //마법진 컴포넌트 참조
+        _magicCircle = _magicCircleInstance.GetComponent<MagicCircle>();
+        if (_magicCircle == null)
+            _magicCircle = _magicCircleInstance.AddComponent<MagicCircle>();
+
+        //마법진 초기화
+        _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
+
+        Debug.Log("마법진이 ObjectSystem에서 생성되어 초기화되었습니다.");
     }
 
     /// <summary>
@@ -113,7 +128,6 @@ public class MagicCircleSystem : MonoBehaviour
                 return;
             }
         }
-        
 
         //보스 컴포넌트 참조
         Boss bossComponent = _bossInstance.GetComponent<Boss>();

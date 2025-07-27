@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 아이템 슬롯 UI에 표시될 아이템 데이터 및 개수 설정
+/// </summary>
 [System.Serializable]
 public class PassiveItemSlot
 {
@@ -23,8 +26,11 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] ItemData _equippedUsableItem;
     [SerializeField] float _usableItemCooldown;
 
+    [Header("----- 장비 사용 효과 시스템 -----")]
+    [SerializeField] UsableItemEffectFactory _effectFactory;
+
     [Header("----- UI 참조 -----")]
-    [SerializeField] InventoryUI _inventoryUI;
+    [SerializeField] ItemUI _inventoryUI;
 
     // 이벤트
     public event Action<ItemData, int> OnPassiveItemAdded;
@@ -44,6 +50,9 @@ public class PlayerInventory : MonoBehaviour
         {
             _inventoryUI.Initialize(this);
         }
+
+        if (_effectFactory == null)
+            _effectFactory = GetComponent<UsableItemEffectFactory>();
     }
 
     void Update()
@@ -57,7 +66,7 @@ public class PlayerInventory : MonoBehaviour
     }
 
     /// <summary>
-    /// 아이템 추가
+    /// 인벤토리에 획득한 아이템 추가
     /// </summary>
     public void AddItem(ItemData itemData)
     {
@@ -137,10 +146,10 @@ public class PlayerInventory : MonoBehaviour
         switch (itemData.EffectType)
         {
             case PassiveEffectType.MaxHpBonus:
-                _hero.GetComponent<HeroModel>().AddMaxHp(effectValue);
+                _hero.GetComponentInChildren<HeroModel>().AddMaxHp(effectValue);
                 break;
             case PassiveEffectType.MoveSpeedBonus:
-                _hero.GetComponent<HeroModel>().AddMoveSpeed(effectValue);
+                _hero.GetComponentInChildren<HeroModel>().AddMoveSpeed(effectValue);
                 break;
             case PassiveEffectType.DamageBonus:
                 // 공격력 증가 로직 (BattlerModel에 추가 필요)
@@ -156,28 +165,9 @@ public class PlayerInventory : MonoBehaviour
     /// </summary>
     void ApplyUsableItemEffect(ItemData itemData)
     {
-        if (_hero == null) return;
+        if (_hero == null || _effectFactory == null) return;
 
-        switch (itemData.UseEffectID)
-        {
-            case "Heal":
-                _hero.GetComponent<HeroModel>().Heal(itemData.EffectValue);
-                break;
-            case "SpeedBoost":
-                StartCoroutine(TemporarySpeedBoost(itemData.EffectValue, 5f));
-                break;
-                // 추가 사용 아이템 효과들...
-        }
-    }
-
-    /// <summary>
-    /// 임시 속도 증가 코루틴
-    /// </summary>
-    IEnumerator TemporarySpeedBoost(float speedBonus, float duration)
-    {
-        _hero.GetComponent<HeroModel>().AddMoveSpeed(speedBonus);
-        yield return new WaitForSeconds(duration);
-        _hero.GetComponent<HeroModel>().AddMoveSpeed(-speedBonus);
+        _effectFactory.ApplyEffect(itemData.UsableEffectType, _hero, itemData);
     }
 
     /// <summary>

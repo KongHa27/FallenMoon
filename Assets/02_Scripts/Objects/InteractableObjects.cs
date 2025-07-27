@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -32,6 +33,9 @@ public abstract class InteractableObjects : MonoBehaviour, IInteractable
     [SerializeField] protected bool _destroyAfterInteraction = false;   //상호작용 후 파괴 여부 (항아리)
     [SerializeField] protected float _destroyDelay = 1f;                // 파괴 지연 시간
     [SerializeField] protected float _interactionCooldown = 0f;         //상호작용 쿨타임
+
+    [Header("----- 상호작용 메시지 UI -----")]
+    [SerializeField] TextMeshProUGUI _interactionText;
 
     protected float _lastInteractionTime;   //마지막 상호작용 시간 (쿨타임 재기 용)
     protected bool _hasInteracted = false;  //상호작용 했는지 여부
@@ -101,7 +105,9 @@ public abstract class InteractableObjects : MonoBehaviour, IInteractable
         if (collision.CompareTag("Player"))
         {
             //UI 표시 등 처리
+            _interactionText.text = GetInteractionText();
 
+            _interactionText.gameObject.SetActive(true);
         }
     }
 
@@ -110,7 +116,9 @@ public abstract class InteractableObjects : MonoBehaviour, IInteractable
         if (collision.CompareTag("Player"))
         {
             //UI 숨김 등 처리
+            _interactionText.text = null;
 
+            _interactionText.gameObject.SetActive(false);
         }
     }
 

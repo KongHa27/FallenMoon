@@ -13,9 +13,10 @@ public class ItemManager : MonoBehaviour
     [SerializeField] ItemData[] _uncommonItems;
     [SerializeField] ItemData[] _legendaryItems;
     [SerializeField] ItemData[] _bossItems;
+    [SerializeField] ItemData[] _usableItems;
 
     [Header("----- 드롭 확률 설정 -----")]
-    [SerializeField] float _bossItemDropChance = 0.08f;      // 보스 아이템 드롭 확률
+    [SerializeField] float _bossItemDropChance = 0.1f;      // 보스 아이템 드롭 확률
     [SerializeField] float _eliteItemDropChance = 0.05f;    // 엘리트 아이템 드롭 확률
 
     // 싱글톤
@@ -85,11 +86,11 @@ public class ItemManager : MonoBehaviour
     {
         // 네잎클로버 소지 시에만 엘리트가 아이템 드롭
         if (enemy.IsElite && _playerInventory.HasSpecialEffect("FourLeafClover"))
-        {
-            if (UnityEngine.Random.Range(0f, 1f) < _eliteItemDropChance)
+        { 
+            if (Random.Range(0f, 1f) < _eliteItemDropChance)
             {
                 // 등급별 드롭 확률 (일반 70%, 희귀 25%, 전설 5%)
-                float rarity = UnityEngine.Random.Range(0f, 1f);
+                float rarity = Random.Range(0f, 1f);
                 ItemRarity dropRarity;
 
                 if (rarity < 0.7f)
@@ -117,11 +118,11 @@ public class ItemManager : MonoBehaviour
     /// </summary>
     void DropRandomItem(Vector3 position, ItemRarity rarity)
     {
-        ItemData[] itemArray = GetItemArrayByRarity(rarity);
+        ItemData[] itemArray = GetPassiveItemsByRarity(rarity);
 
         if (itemArray != null && itemArray.Length > 0)
         {
-            ItemData randomItem = itemArray[UnityEngine.Random.Range(0, itemArray.Length)];
+            ItemData randomItem = itemArray[Random.Range(0, itemArray.Length)];
             DropItem(randomItem, position);
         }
     }
@@ -145,7 +146,7 @@ public class ItemManager : MonoBehaviour
     /// <summary>
     /// 등급에 따른 아이템 배열 반환
     /// </summary>
-    ItemData[] GetItemArrayByRarity(ItemRarity rarity)
+    public ItemData[] GetPassiveItemsByRarity(ItemRarity rarity)
     {
         switch (rarity)
         {
@@ -160,5 +161,10 @@ public class ItemManager : MonoBehaviour
             default:
                 return _commonItems;
         }
+    }
+
+    public ItemData[] GetUsableItems()
+    {
+        return _usableItems;
     }
 }

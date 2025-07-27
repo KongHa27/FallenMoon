@@ -59,7 +59,7 @@ public class AdventurerSkill1 : SkillBase
             if (damageable != null)
             {
                 // 230% 피해
-                BattlerModel casterModel = _caster.GetComponent<BattlerModel>();
+                BattlerModel casterModel = _caster.GetComponentInChildren<BattlerModel>();
                 if (casterModel != null)
                 {
                     float finalDamage = casterModel.GetDamage() * _data.damage;
