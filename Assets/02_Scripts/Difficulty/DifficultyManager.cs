@@ -26,7 +26,6 @@ public class DifficultyManager : MonoBehaviour
 
     [Header("----- 침식도별 어둠 설정 -----")]
     [SerializeField] Color _baseDarknessColor = new Color(0.1f, 0.1f, 0.15f, 0.3f);  // 기본 어둠 색상
-    [SerializeField] float _darknessIncreaseRate = 0.05f;  // 침식도 단계별 어둠 증가율
     [SerializeField] float _maxDarknessAlpha = 0.8f;       // 최대 어둠 투명도
 
     [Header("----- 디버그용 -----")]

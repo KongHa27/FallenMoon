@@ -98,9 +98,6 @@ public class DifficultyView : MonoBehaviour
 
             // 단계에 따른 텍스트 색상 변경
             _erosionStageText.color = GetStageColor(stageName);
-
-            //종말 단계 시 아웃라인 추가
-            ApplyStageTextEffect(stageName);
         }
     }
 
@@ -181,35 +178,6 @@ public class DifficultyView : MonoBehaviour
             case "종말": return Color.black;
             default: return Color.white;
         }
-    }
-
-    /// <summary>
-    /// 침식도 단계 텍스트에 특별한 효과 적용
-    /// </summary>
-    void ApplyStageTextEffect(string stageName)
-    {
-        if (_erosionStageText == null) return;
-
-        // "종말" 단계일 때 흰색 아웃라인 추가
-        if (stageName == "종말")
-        {
-            // TextMeshPro의 아웃라인 설정
-            if (_erosionStageText is TextMeshProUGUI tmp)
-            {
-                tmp.fontSize = 36f;
-                tmp.fontMaterial.SetFloat("_OutlineWidth", 0.05f);
-                tmp.fontMaterial.SetColor("_OutlineColor", Color.white);
-            }
-        }
-        else
-        {
-            // 다른 단계에서는 아웃라인 제거
-            if (_erosionStageText is TextMeshProUGUI tmp)
-            {
-                tmp.fontMaterial.SetFloat("_OutlineWidth", 0f);
-            }
-        }                                                                  
-
     }
 
     /// <summary>

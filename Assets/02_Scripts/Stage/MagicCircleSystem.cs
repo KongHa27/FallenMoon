@@ -131,8 +131,11 @@ public class MagicCircleSystem : MonoBehaviour
 
         //보스 컴포넌트 참조
         Boss bossComponent = _bossInstance.GetComponent<Boss>();
-        if (bossComponent == null)
-            bossComponent = _bossInstance.AddComponent<Boss>();
+        if (bossComponent != null)
+        {
+            int curErosionLevel = DifficultyManager.Instance?.CurrentErosionLevel ?? 1;
+            bossComponent.Initialize(curErosionLevel, false);
+        }
 
         //보스에 보스 처치 이벤트 연결
         bossComponent.OnBossDead += OnBossDead;

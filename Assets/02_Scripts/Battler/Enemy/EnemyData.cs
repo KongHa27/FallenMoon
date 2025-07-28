@@ -7,16 +7,16 @@ using UnityEngine;
 public class EnemyData : ScriptableObject
 {
     [Header("----- 기본 정보 -----")]
-    [SerializeField] string _name;
-    [SerializeField] bool _canBeElite = true;
+    [SerializeField] string _name;              //적 이름
+    [SerializeField] bool _canBeElite = true;   //엘리트 적이 될 수 있는지 여부
 
     [Header("----- 기본 스탯 -----")]
-    [SerializeField] float _baseMaxHp;
-    [SerializeField] float _baseDamage;
-    [SerializeField] float _amor;
-    [SerializeField] float _moveSpeed;
-    [SerializeField] float _baseExpReward;
-    [SerializeField] int _baseGoldReward;
+    [SerializeField] float _baseMaxHp;      //최대 체력
+    [SerializeField] float _baseDamage;     //공격력
+    [SerializeField] float _amor;           //방어력
+    [SerializeField] float _moveSpeed;      //이동속도
+    [SerializeField] float _baseExpReward;  //보상 경험치
+    [SerializeField] int _baseGoldReward;   //보상 골드
 
     [Header("----- 레벨별 증가율 (%) -----")]
     [SerializeField] float _hpIncreaseRate = 0.3f;           //체력 +30%

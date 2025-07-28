@@ -134,6 +134,8 @@ public class ItemManager : MonoBehaviour
     {
         if (_itemPickupPrefab != null && itemData != null)
         {
+            position.y += 0.5f;
+
             GameObject itemObj = Instantiate(_itemPickupPrefab, position, Quaternion.identity);
             ItemPickup pickup = itemObj.GetComponent<ItemPickup>();
             if (pickup != null)

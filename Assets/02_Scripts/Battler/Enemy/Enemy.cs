@@ -18,15 +18,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] float _detectionRange = 5f;        //감지 거리
     [SerializeField] float _attackRange = 1.5f;         //공격 사거리
     [SerializeField] float _attackCooldown = 2f;        //공격 쿨타임
-    [SerializeField] LayerMask _targetLayer;            //공격 타겟의 레이어
+    [SerializeField] protected LayerMask _targetLayer;            //공격 타겟의 레이어
 
     [Header("----- 시각적 효과 -----")]
     [SerializeField] GameObject _eliteIcon;
 
     float _moveSpeed;
-    Transform _target;          //공격 대상(타겟)
+    protected Transform _target;          //공격 대상(타겟)
     float _lastAttackTime;
-    bool _isDead = false;
+    protected bool _isDead = false;
 
     // 적 죽음 이벤트
     public event Action<Enemy> OnEnemyDeath;
@@ -52,6 +52,11 @@ public class Enemy : MonoBehaviour
     public bool IsElite => _model.IsElite;
     public EnemyModel Model => _model;
 
+
+    protected virtual void Start()
+    {
+        
+    }
 
     public void Initialize(int level, bool forceElite = false)
     {
@@ -199,7 +204,7 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// 사망 처리
     /// </summary>
-    void OnDead()
+    protected virtual void OnDead()
     {
         _isDead = true;
 
@@ -242,7 +247,7 @@ public class Enemy : MonoBehaviour
     }
 
     // 디버그용 기즈모 그리기
-    private void OnDrawGizmosSelected()
+    protected virtual void OnDrawGizmosSelected()
     {
         // 감지 범위
         Gizmos.color = Color.yellow;
