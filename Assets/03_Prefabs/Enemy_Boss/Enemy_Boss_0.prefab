@@ -28,8 +28,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7420196327926789237}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300356, guid: 0bbb4973cb6e355408c55e6857cbc224, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 434a7633efddb4c6bb6db3687f6f2bb6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -427,7 +427,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7420196327926789237}
   - component: {fileID: 7438494478863234117}
-  - component: {fileID: 8980322638739462241}
+  - component: {fileID: 7171572837516361043}
   - component: {fileID: 236158746977253328}
   - component: {fileID: 7523518721304400086}
   - component: {fileID: 6317664576399599591}
@@ -474,12 +474,12 @@ MonoBehaviour:
   _damage: 0
   _amor: 0
   _hpBar: {fileID: 6778452278761240087}
-  _data: {fileID: 11400000, guid: 9ca8a2003ac55f141adb7cbe62530a48, type: 2}
+  _data: {fileID: 11400000, guid: 59312f710d81b134da2d1c6226bce511, type: 2}
   _isElite: 0
   _expReward: 0
   _goldReward: 0
   _erosionLevel: 0
---- !u!114 &8980322638739462241
+--- !u!114 &7171572837516361043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -488,7 +488,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8719530476096001677}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e1a13e25dcfa2e46a9cfd37ff6c11ac, type: 3}
+  m_Script: {fileID: 11500000, guid: b0b6cf602ad5d2a43add679452108724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _model: {fileID: 7438494478863234117}
@@ -504,6 +504,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _eliteIcon: {fileID: 3706230925906738566}
+  _bossData: {fileID: 0}
+  _patternPoint: {fileID: 0}
 --- !u!114 &236158746977253328
 MonoBehaviour:
   m_ObjectHideFlags: 0

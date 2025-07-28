@@ -105,8 +105,6 @@ public class ObjectSystem : MonoBehaviour
         Vector3 spawnPos = GetValidSpawnPosition();
         if (spawnPos != Vector3.zero)
         {
-            spawnPos.y += 1f;
-
             _magicCircleInstance = Instantiate(_magicCirclePrefab, spawnPos, Quaternion.identity);
             _spawnedObjects.Add(_magicCircleInstance);
             _usedPositions.Add(spawnPos);

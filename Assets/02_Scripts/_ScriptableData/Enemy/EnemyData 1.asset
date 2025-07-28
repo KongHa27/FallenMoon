@@ -17,7 +17,7 @@ MonoBehaviour:
   _baseMaxHp: 70
   _baseDamage: 10
   _amor: 0
-  _moveSpeed: 3
+  _moveSpeed: 4
   _baseExpReward: 10
   _baseGoldReward: 10
   _hpIncreaseRate: 0.3

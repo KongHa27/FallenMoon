@@ -30,10 +30,23 @@ public class HeroModel : BattlerModel
     public event Action<int> OnGoldChanged;
 
     public int Gold => _gold;
+    public float Amor => _amor;
+    public float MoveSpeed => _moveSpeed;
 
     private void Start()
     {
         _hpBar = GameObject.Find("HpBar").GetComponent<Image>();
+    }
+
+    public void SetHeroData(HeroData heroData)
+    {
+        if (heroData != null)
+        {
+            _data = heroData;
+            Debug.Log($"HeroData 설정 완료: {heroData.name}");
+        }
+        else
+            Debug.LogWarning("전달받은 HeroData가 null입니다. 기본 데이터를 사용합니다.");
     }
 
     /// <summary>
@@ -51,6 +64,7 @@ public class HeroModel : BattlerModel
         _damage = _data.Damage;
         _amor = _data.Amor;
 
+        _level = 1;
         _curExp = 0;
         _maxExp = _data.GetMaxExp(_level);
         _gold = 0;
@@ -212,6 +226,11 @@ public class HeroModel : BattlerModel
         _moveSpeed += amount;
 
         OnSpeedChanged?.Invoke(_moveSpeed);
+    }
+
+    public void AddAmor(float amount)
+    {
+        _amor += amount;
     }
 
     /// <summary>

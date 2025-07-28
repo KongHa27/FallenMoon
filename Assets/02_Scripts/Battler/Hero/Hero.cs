@@ -33,6 +33,7 @@ public class Hero : MonoBehaviour, ILadderUser
 
     Camera _camera;
     Vector2 _curInput;
+    CharacterData _curCharData;
 
     //ILadderUser 인터페이스 구현
     public bool CanUseLadder => true;
@@ -67,34 +68,66 @@ public class Hero : MonoBehaviour, ILadderUser
         remove => _skillManager.OnSkillCooldownChanged -= value;
     }
 
+    public CharacterData GetCurCharData()
+    {
+        return _curCharData;
+    }
 
     public void InitializeWithPrefab()
     {
+        if (GameManager.Instance != null)
+            _curCharData = GameManager.Instance.GetSelectedCharacterData();
+
         _model = GetComponentInChildren<HeroModel>();
         _renderer = GetComponentInChildren<SpriteRenderer>();
         _animator = GetComponentInChildren<Animator>();
         _skillManager = GetComponentInChildren<SkillManager>();
         _attackSystem = GetComponentInChildren<AttackSystem>();
 
+        if (!CheckComponents())
+            return;
+
+        ApplyCharacterData();
+
+        Initialize();
+    }
+
+    bool CheckComponents()
+    {
         if (_model == null)
         {
             Debug.LogError("HeroModel을 찾을 수 없습니다!");
-            return;
+            return false;
         }
 
         if (_renderer == null)
         {
             Debug.LogError("SpriteRenderer를 찾을 수 없습니다!");
-            return;
+            return false;
         }
 
         if (_skillManager == null)
         {
             Debug.LogError("SkillManager를 찾을 수 없습니다!");
-            return;
+            return false;
         }
 
-        Initialize();
+        return true;
+    }
+
+    private void ApplyCharacterData()
+    {
+        if (_curCharData != null && _curCharData.HeroData != null && _model != null)
+        {
+            // HeroModel에 캐릭터별 HeroData 설정
+            _model.SetHeroData(_curCharData.HeroData);
+
+            Debug.Log($"캐릭터 데이터 적용 완료: {_curCharData.CharacterName}");
+        }
+        else
+        {
+            Debug.LogWarning("캐릭터 데이터가 없어 기본 설정을 사용합니다.");
+        }
     }
 
     /// <summary>
@@ -122,9 +155,7 @@ public class Hero : MonoBehaviour, ILadderUser
         _model.OnLevelChanged += (_, newLevel) => _statusView.SetLevelText(newLevel);
 
         if (_ladderMover != null)
-        {
             _ladderMover.OnLadderStateChanged += OnLadderStateChanged;
-        }
 
         _skillManager.Initialize(transform);
 

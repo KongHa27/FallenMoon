@@ -262,7 +262,7 @@ Transform:
   m_GameObject: {fileID: 3506470517604825804}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -309,7 +309,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 272b11fbfff364c65afa2d764c799e0b, type: 3}
+  m_Sprite: {fileID: 5546671543968653177, guid: 97be59984e8342a3b87f2f01ff6d9bce, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -347,7 +347,7 @@ Transform:
   m_GameObject: {fileID: 6463837980916580336}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -406,13 +406,13 @@ MonoBehaviour:
   _collider: {fileID: 4024724780054018008}
   _objectType: 1
   _objectName: 
-  _sprite: {fileID: 21300000, guid: 61e32df0024811f4c9e9ab57f2e1854f, type: 2}
+  _sprite: {fileID: 5546671543968653177, guid: 97be59984e8342a3b87f2f01ff6d9bce, type: 3}
   _canInteract: 1
   _destroyAfterInteraction: 0
   _destroyDelay: 1
   _interactionCooldown: 0
   _interactionText: {fileID: 4820503150950229066}
-  _brokenSprite: {fileID: 21300000, guid: 4f7195e607776c5418fcd62095bdaf68, type: 2}
+  _brokenSprite: {fileID: 659797372610145418, guid: 97be59984e8342a3b87f2f01ff6d9bce, type: 3}
   _minGoldReward: 5
   _maxGoldReward: 15
   _expReward: 10

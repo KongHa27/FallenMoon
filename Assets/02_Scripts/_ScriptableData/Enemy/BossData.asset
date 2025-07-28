@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fbead1827c05cf499ea34dc1ad73f2a, type: 3}
+  m_Name: BossData
+  m_EditorClassIdentifier: 
+  _name: Stage1Boss
+  _canBeElite: 1
+  _baseMaxHp: 700
+  _baseDamage: 25
+  _amor: 10
+  _moveSpeed: 3
+  _baseExpReward: 45
+  _baseGoldReward: 45
+  _hpIncreaseRate: 0.3
+  _damageIncreaseRate: 0.2
+  _expRewardIncreaseRate: 0.2
+  _goldRewardIncreaseRate: 0.2
+  _eliteHpMultiplier: 2
+  _eliteDamageMultiplier: 1.5
+  _eliteAmorMultiplier: 1.5
+  _eliteExpMultiplier: 3
+  _eliteGoldMultiplier: 2
+  _isBoss: 1
+  _patterns:
+  - patternName: RockThrow
+    cooldown: 5
+    damage: 30
+    range: 8
+    castTime: 1.5
+    patternType: 0
+    projectilePrefab: {fileID: 3841499251542296262, guid: 81537bd3027a46d4b9585f523fc162de, type: 3}
+    effectPrefab: {fileID: 0}
+  - patternName: GroundSlam
+    cooldown: 7
+    damage: 40
+    range: 4
+    castTime: 2
+    patternType: 1
+    projectilePrefab: {fileID: 0}
+    effectPrefab: {fileID: 0}
+  _patternStartDelay: 3
