@@ -222,7 +222,10 @@ public class GameManager : MonoBehaviour
             for (int i = heroController.transform.childCount - 1; i >= 0; i--)
             {
                 Transform child = heroController.transform.GetChild(i);
-                if (child.CompareTag("Character")) // 캐릭터 태그가 있는 경우만 제거
+                // 캐릭터 관련 컴포넌트를 가진 자식만 제거
+                if (child.GetComponent<HeroModel>() != null ||
+                    child.GetComponent<SpriteRenderer>() != null ||
+                    child.GetComponent<Animator>() != null)
                 {
                     DestroyImmediate(child.gameObject);
                 }

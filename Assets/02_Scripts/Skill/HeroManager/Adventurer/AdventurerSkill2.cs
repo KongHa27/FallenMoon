@@ -80,7 +80,7 @@ public class AdventurerSkill2 : SkillBase
     }
 
     /// <summary>
-    /// 모든 스킬의 쿨다운을 초기화하는 함수 (개선된 버전)
+    /// 모든 스킬의 쿨다운을 초기화하는 함수
     /// </summary>
     void ResetAllSkillCooldowns()
     {

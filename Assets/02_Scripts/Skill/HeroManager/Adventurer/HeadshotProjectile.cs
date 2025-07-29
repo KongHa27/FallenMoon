@@ -7,6 +7,7 @@ public class HeadshotProjectile : MonoBehaviour
     [Header("발사체 설정")]
     [SerializeField] float _speed = 20f;
     [SerializeField] LayerMask _enemyLayerMask;
+    [SerializeField] GameObject _eft;
 
     Vector2 _direction;
     float _maxRange;
@@ -126,28 +127,11 @@ public class HeadshotProjectile : MonoBehaviour
     void CreateHeadshotEffect(Vector3 position)
     {
         // 파티클 이펙트
-        GameObject hitEffect = new GameObject("HeadshotHitEffect");
-        hitEffect.transform.position = position;
-
-        ParticleSystem particles = hitEffect.AddComponent<ParticleSystem>();
-        var main = particles.main;
-        main.startColor = Color.red;
-        main.maxParticles = 30;
-        main.startLifetime = 0.8f;
-        main.startSpeed = 6f;
-
-        var shape = particles.shape;
-        shape.shapeType = ParticleSystemShapeType.Circle;
-        shape.radius = 0.3f;
-
-        var emission = particles.emission;
-        emission.SetBursts(new ParticleSystem.Burst[]
-        {
-            new ParticleSystem.Burst(0.0f, 30)
-        });
+        _eft.transform.position = position;
+        _eft.gameObject.SetActive(true);
 
         // 이펙트 자동 삭제
-        Destroy(hitEffect, 2f);
+        Destroy(_eft, 2f);
     }
 
     /// <summary>

@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: Char_Warrior
   m_EditorClassIdentifier: 
   _characterName: Warrior
-  _characterDescription: "\uC815\uC758\uB97C \uCAD2\uB294 \uC804\uC0AC"
   _characterIcon: {fileID: 39707963, guid: a1d6a1afaf0efa548a445aae537e2199, type: 3}
+  _characterPreviewSprite: {fileID: 39707963, guid: a1d6a1afaf0efa548a445aae537e2199, type: 3}
   _characterPrefab: {fileID: 995642583116360907, guid: 22cef07973e04ee4a8d387c434bf3dcf, type: 3}
+  _previewIdleSprites:
+  - {fileID: 39707963, guid: a1d6a1afaf0efa548a445aae537e2199, type: 3}
+  - {fileID: 242016223, guid: a1d6a1afaf0efa548a445aae537e2199, type: 3}
+  _animationFrameRate: 8
   _heroData: {fileID: 11400000, guid: 48810f0d017a5734eacb77429b189bfd, type: 2}

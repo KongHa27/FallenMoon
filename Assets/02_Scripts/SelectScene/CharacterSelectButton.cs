@@ -12,10 +12,6 @@ public class CharacterSelectButton : MonoBehaviour
     [SerializeField] Image _characterIconImage;
     [SerializeField] GameObject _selectedFrame; // 선택 시 활성화되는 프레임
 
-    [Header("----- 색상 설정 -----")]
-    [SerializeField] Color _normalColor = Color.white;
-    [SerializeField] Color _selectedColor = Color.yellow;
-
     // 이벤트
     public event Action OnButtonClicked;
 
@@ -64,16 +60,11 @@ public class CharacterSelectButton : MonoBehaviour
     {
         _isSelected = selected;
 
-        // 선택 프레임 활성화/비활성화
+        // 선택 프레임 활성화/비활성화만 처리
         if (_selectedFrame != null)
         {
             _selectedFrame.SetActive(_isSelected);
         }
-
-        // 버튼 색상 변경
-        ColorBlock colors = _button.colors;
-        colors.normalColor = _isSelected ? _selectedColor : _normalColor;
-        _button.colors = colors;
     }
 
     /// <summary>

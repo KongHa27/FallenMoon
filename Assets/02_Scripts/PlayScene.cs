@@ -31,9 +31,15 @@ public class PlayScene : MonoBehaviour
         //상호작용 입력 이벤트 구독
         _inputHandler.OnInteractionInput += OnInteractionInput;
 
-        _hero.InitializeWithPrefab();
+        StartCoroutine(DelayedInitializeHero());
         _interactionManager.Initialize(_hero);
 
+    }
+
+    IEnumerator DelayedInitializeHero()
+    {
+        yield return null;
+        _hero.InitializeWithPrefab();
     }
 
     void OnMoveInput(Vector2 inputVector)
