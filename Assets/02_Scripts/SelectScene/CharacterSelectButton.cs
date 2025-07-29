@@ -10,15 +10,11 @@ public class CharacterSelectButton : MonoBehaviour
     [Header("----- UI 컴포넌트 -----")]
     [SerializeField] Button _button;
     [SerializeField] Image _characterIconImage;
-    [SerializeField] TextMeshProUGUI _characterNameText;
-    [SerializeField] Image[] _starImages; // 별점 표시용
     [SerializeField] GameObject _selectedFrame; // 선택 시 활성화되는 프레임
 
     [Header("----- 색상 설정 -----")]
     [SerializeField] Color _normalColor = Color.white;
     [SerializeField] Color _selectedColor = Color.yellow;
-    [SerializeField] Color _starActiveColor = Color.yellow;
-    [SerializeField] Color _starInactiveColor = Color.gray;
 
     // 이벤트
     public event Action OnButtonClicked;
@@ -59,12 +55,6 @@ public class CharacterSelectButton : MonoBehaviour
         {
             _characterIconImage.sprite = _characterData.CharacterIcon;
         }
-
-        // 캐릭터 이름 설정
-        if (_characterNameText != null)
-        {
-            _characterNameText.text = _characterData.CharacterName;
-        }
     }
 
     /// <summary>
@@ -84,12 +74,6 @@ public class CharacterSelectButton : MonoBehaviour
         ColorBlock colors = _button.colors;
         colors.normalColor = _isSelected ? _selectedColor : _normalColor;
         _button.colors = colors;
-
-        // 캐릭터 이름 텍스트 색상 변경
-        if (_characterNameText != null)
-        {
-            _characterNameText.color = _isSelected ? _selectedColor : Color.black;
-        }
     }
 
     /// <summary>

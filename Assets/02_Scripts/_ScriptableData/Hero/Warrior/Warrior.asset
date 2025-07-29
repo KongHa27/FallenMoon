@@ -18,7 +18,7 @@ MonoBehaviour:
   _hpRegen: 1
   _hpRegenIncrementRate: 0.16
   _moveSpeed: 5
-  _jumpPower: 10
+  _jumpPower: 20
   _damage: 12
   _damageIncrementRate: 3
   _amor: 0

@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] CharacterData[] _characterDatas;
 
     [Header("----- 씬 이름 -----")]
-    [SerializeField] string _titleSceneName = "TitleScene";
-    [SerializeField] string _selectSceneName = "SelectScene";
-    [SerializeField] string _playSceneName = "PlayScene";
+    [SerializeField] string _titleSceneName = "0_Title";
+    [SerializeField] string _selectSceneName = "1_Select";
+    [SerializeField] string _playSceneName = "2_Game";
 
     // 선택된 데이터
     private int _selectedCharacterIndex = 0;

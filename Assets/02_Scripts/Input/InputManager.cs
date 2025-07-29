@@ -32,7 +32,7 @@ public class InputManager : InputHandler
         if (Input.GetButtonDown("Jump"))
             OnJumpInput?.Invoke();
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButton("Fire1"))
             OnAttackInput?.Invoke();
 
         if (Input.GetButtonDown("Skill1"))

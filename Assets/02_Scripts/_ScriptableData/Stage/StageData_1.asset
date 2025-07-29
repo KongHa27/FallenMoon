@@ -23,5 +23,5 @@ MonoBehaviour:
   - "\uC78A\uD600\uC9C4 \uC232_2"
   - "\uC78A\uD600\uC9C4 \uC232_3"
   _bossPrefab: {fileID: 8719530476096001677, guid: f4f213d2b8f5ea34eb24fe903aebe467, type: 3}
-  _chargingTime: 10
+  _chargingTime: 90
   _chargingAnimationSpeed: 2

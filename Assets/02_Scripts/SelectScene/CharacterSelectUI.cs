@@ -8,15 +8,17 @@ public class CharacterSelectUI : MonoBehaviour
 {
     [Header("----- 캐릭터 정보 UI -----")]
     [SerializeField] TextMeshProUGUI _characterNameText;
-    [SerializeField] TextMeshProUGUI _characterDescriptionText;
-    [SerializeField] Image _characterIconImage;
-    [SerializeField] Image[] _starImages; // 별점 UI (5개)
+
+    [Header("----- 2D 캐릭터 프리뷰 -----")]
+    [SerializeField] Image _characterPreviewImage; // 2D 캐릭터 이미지
+    [SerializeField] Animator _characterPreviewAnimator; // 2D 애니메이션용 Animator
+    [SerializeField] Vector3 _characterScale = Vector3.one; // 캐릭터 크기 조정
 
     [Header("----- 캐릭터 선택 버튼들 -----")]
     [SerializeField] CharacterSelectButton[] _characterButtons;
 
     [Header("----- 난이도 선택 UI -----")]
-    [SerializeField] Button[] _difficultyButtons; // 4개 난이도 버튼
+    [SerializeField] Button[] _difficultyButtons;
     [SerializeField] TextMeshProUGUI _selectedDifficultyText;
     [SerializeField] Color _selectedButtonColor = Color.yellow;
     [SerializeField] Color _normalButtonColor = Color.white;
@@ -73,7 +75,7 @@ public class CharacterSelectUI : MonoBehaviour
         // 캐릭터 선택 버튼들
         for (int i = 0; i < _characterButtons.Length; i++)
         {
-            int index = i; // 클로저 문제 해결
+            int index = i;
             _characterButtons[i].OnButtonClicked += () => SelectCharacter(index);
         }
 
@@ -109,6 +111,9 @@ public class CharacterSelectUI : MonoBehaviour
         UpdateCharacterInfo(selectedCharacter);
         UpdateCharacterButtons(characterIndex);
 
+        // 2D 캐릭터 프리뷰 업데이트
+        UpdateCharacterPreview(selectedCharacter);
+
         // GameManager에 선택 정보 전달
         GameManager.Instance.SelectCharacter(characterIndex);
     }
@@ -119,8 +124,6 @@ public class CharacterSelectUI : MonoBehaviour
     private void UpdateCharacterInfo(CharacterData characterData)
     {
         _characterNameText.text = characterData.CharacterName;
-        _characterDescriptionText.text = characterData.CharacterDescription;
-        _characterIconImage.sprite = characterData.CharacterIcon;
     }
 
     /// <summary>
@@ -131,6 +134,31 @@ public class CharacterSelectUI : MonoBehaviour
         for (int i = 0; i < _characterButtons.Length; i++)
         {
             _characterButtons[i].SetSelected(i == selectedIndex);
+        }
+    }
+
+    /// <summary>
+    /// 2D 캐릭터 프리뷰 업데이트
+    /// </summary>
+    private void UpdateCharacterPreview(CharacterData characterData)
+    {
+        // 캐릭터 프리뷰 이미지 설정
+        if (_characterPreviewImage != null)
+        {
+            // 이미지 활성화
+            _characterPreviewImage.gameObject.SetActive(true);
+
+            // 스케일 적용
+            _characterPreviewImage.transform.localScale = _characterScale;
+
+            // 애니메이터 컨트롤러 변경 (Entry -> Idle로 자동 재생)
+            if (_characterPreviewAnimator != null && characterData.CharacterAnimatorController != null)
+            {
+                _characterPreviewAnimator.runtimeAnimatorController = characterData.CharacterAnimatorController;
+                // Animator Controller에서 Entry -> Idle로 자동 연결되어 있으면 자동으로 재생됨
+            }
+
+            Debug.Log($"캐릭터 프리뷰 업데이트: {characterData.CharacterName}");
         }
     }
 
@@ -185,7 +213,7 @@ public class CharacterSelectUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 뒤로가기 (타이틀로)
+    /// 뒤로가기
     /// </summary>
     private void GoBack()
     {

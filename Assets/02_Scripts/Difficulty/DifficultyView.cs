@@ -147,22 +147,6 @@ public class DifficultyView : MonoBehaviour
     }
 
     /// <summary>
-    /// 침식도 게이지 바 업데이트
-    /// </summary>
-    void UpdateErosionGauge(int currentLevel)
-    {
-        if (_erosionGaugeBar == null) return;
-
-        // 종말 단계 도달 시 특별한 효과나 애니메이션을 추가할 수 있음
-        string stageName = _difficultyManager.GetErosionStageName();
-        if (stageName == "종말")
-        {
-            // 종말 단계 도달 시 게이지 바 효과 (예: 깜빡임, 색상 변화 등)
-            StartCoroutine(ApocalypseGaugeEffect());
-        }
-    }
-
-    /// <summary>
     /// 침식도 단계에 따른 텍스트 색상 반환
     /// </summary>
     Color GetStageColor(string stageName)
@@ -177,25 +161,6 @@ public class DifficultyView : MonoBehaviour
             case "불가능": return new Color(0.5f, 0f, 0.5f); // 보라색
             case "종말": return Color.black;
             default: return Color.white;
-        }
-    }
-
-    /// <summary>
-    /// 종말 단계 게이지 바 특별 효과
-    /// </summary>
-    System.Collections.IEnumerator ApocalypseGaugeEffect()
-    {
-        if (_erosionGaugeBar == null) yield break;
-
-        Color originalColor = _erosionGaugeBar.color;
-
-        // 빨간색으로 깜빡이는 효과
-        for (int i = 0; i < 3; i++)
-        {
-            _erosionGaugeBar.color = Color.red;
-            yield return new WaitForSeconds(0.2f);
-            _erosionGaugeBar.color = originalColor;
-            yield return new WaitForSeconds(0.2f);
         }
     }
     #endregion

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FunkyCode;
+using FunkyCode.LightingSettings;
 
 /// <summary>
 /// 선택,가변 난이도와 그에 따른 데이터들을 관리하는 클래스
@@ -24,9 +25,8 @@ public class DifficultyManager : MonoBehaviour
     [SerializeField] float _erosionIncreaseInterval = 75f;  // 침식도 증가 간격 (초)
     [SerializeField] int _maxErosionLevel = 99;             // 최대 침식도 레벨
 
-    [Header("----- 침식도별 어둠 설정 -----")]
-    [SerializeField] Color _baseDarknessColor = new Color(0.1f, 0.1f, 0.15f, 0.3f);  // 기본 어둠 색상
-    [SerializeField] float _maxDarknessAlpha = 0.8f;       // 최대 어둠 투명도
+    [Header("----- 침식도별 라이팅 프로필 -----")]
+    [SerializeField] Profile[] _erosionProfiles;
 
     [Header("----- 디버그용 -----")]
     [SerializeField] KeyCode _increaseErosionKey = KeyCode.F1;
@@ -193,6 +193,62 @@ public class DifficultyManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 침식도에 따라 프로필 교체
+    /// </summary>
+    void SetLightByErosionLevel(int level)
+    {
+        if (_lightingManager == null)
+        {
+            _lightingManager = FindObjectOfType<LightingManager2D>();
+            if (_lightingManager == null)
+            {
+                Debug.LogWarning("LightingManager2D를 찾을 수 없습니다!");
+                return;
+            }
+        }
+
+        // 침식도 레벨을 프로필 인덱스로 변환 (0~9)
+        int profileIndex = GetProfileIndexByErosionLevel(level);
+
+        if (_erosionProfiles != null && profileIndex >= 0 && profileIndex < _erosionProfiles.Length)
+        {
+            if (_erosionProfiles[profileIndex] != null)
+            {
+                _lightingManager.profile = _erosionProfiles[profileIndex];
+                Debug.Log($"프로필 교체 완료: 침식도 {level} → 프로필 인덱스 {profileIndex}");
+                Debug.Log($"적용된 어둠 색상: {_erosionProfiles[profileIndex].DarknessColor}");
+            }
+            else
+            {
+                Debug.LogWarning($"프로필 인덱스 {profileIndex}가 null입니다!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"프로필 배열이 없거나 인덱스가 범위를 벗어났습니다. 인덱스: {profileIndex}");
+        }
+    }
+
+    /// <summary>
+    /// 침식도 레벨을 프로필 인덱스로 변환
+    /// </summary>
+    int GetProfileIndexByErosionLevel(int level)
+    {
+        // 침식도 1~99를 0~9 인덱스로 변환
+        if (level <= 4) return 0;      // 쉬움 - 알파 0.6
+        else if (level <= 8) return 1; // 보통 - 알파 0.65  
+        else if (level <= 12) return 2; // 어려움 - 알파 0.7
+        else if (level <= 16) return 3; // 매우 어려움 - 알파 0.75
+        else if (level <= 20) return 4; // 광기 - 알파 0.8
+        else if (level <= 30) return 5; // 불가능 - 알파 0.85
+        else if (level <= 50) return 6; // 종말 1단계 - 알파 0.9
+        else if (level <= 70) return 7; // 종말 2단계 - 알파 0.95
+        else if (level <= 90) return 8; // 종말 3단계 - 알파 0.98
+        else return 9; // 종말 최종 - 알파 1.0
+    }
+
+
+    /// <summary>
     /// 침식도 레벨 감소 (디버그용)
     /// </summary>
     public void DecreaseErosionLevel()
@@ -232,98 +288,6 @@ public class DifficultyManager : MonoBehaviour
         else if (_curErosionLevel <= 20) return "광기";
         else if (_curErosionLevel <= 24) return "불가능";
         else return "종말";
-    }
-
-    void SetLightByErosionLevel(int level)
-    {
-        if (_lightingManager == null)
-        {
-            _lightingManager = FindObjectOfType<LightingManager2D>();
-
-            if (_lightingManager == null)
-            {
-                Debug.LogWarning("LightingManager2D를 찾을 수 없습니다!");
-                return;
-            }
-        }
-
-        //침식도에 따른 어둠 강도 계산
-        float darknessIntensity = CalculateDarknessIntensity(level);
-
-        //어둠 강도에 따른 어둠 색상 계산
-        Color darknessColor = CalculateDarknessColor(darknessIntensity);
-        //어둠 색상 적용
-        ApplyDarknessToLighting(darknessColor);
-    }
-
-    /// <summary>
-    /// 침식도 레벨(단계)에 따른 어둠 강도 계산
-    /// </summary>
-    /// <param name="level"></param>
-    /// <returns></returns>
-    float CalculateDarknessIntensity(int level)
-    {
-        // 침식도 단계별로 어둠 강도 조정
-        float baseIntensity = 0.1f;
-
-        //쉬움
-        if (level <= 4)
-            return baseIntensity;
-        //보통
-        else if (level <= 8)
-            return baseIntensity + 0.15f;
-        else if (level <= 12)    // 어려움
-            return baseIntensity + 0.3f;
-        else if (level <= 16)    // 매우 어려움
-            return baseIntensity + 0.45f;
-        else if (level <= 20)    // 광기
-            return baseIntensity + 0.6f;
-        else if (level <= 24)    // 불가능
-            return baseIntensity + 0.7f;
-        else                           // 종말
-            return _maxDarknessAlpha;
-    }
-
-    /// <summary>
-    /// 어둠 강도에 따른 색상 계산
-    /// </summary>
-    /// <param name="intensity"></param>
-    /// <returns></returns>
-    Color CalculateDarknessColor(float intensity)
-    {
-        Color darknessColor = _baseDarknessColor;
-
-        // 침식도가 높아질수록 더 어둡고 불길한 색상으로 변화
-        if (intensity > 0.5f)
-        {
-            // 높은 침식도에서는 붉은 기운 추가
-            darknessColor.r += (intensity - 0.5f) * 0.3f;
-            darknessColor.g -= (intensity - 0.5f) * 0.1f;
-        }
-
-        // 알파값(투명도) 조정으로 어둠 강도 제어
-        darknessColor.a = Mathf.Clamp(intensity, 0f, _maxDarknessAlpha);
-
-        return darknessColor;
-    }
-
-    /// <summary>
-    /// Smart Lighting 2D에 어둠 설정 적용
-    /// </summary>
-    void ApplyDarknessToLighting(Color darknessColor)
-    {
-        // Smart Lighting 2D의 Profile을 통해 어둠 색상 설정
-        if (_lightingManager != null && _lightingManager.profile != null)
-        {
-            _lightingManager.profile.DarknessColor = darknessColor;
-
-            // 실시간으로 변경사항 적용
-            _lightingManager.UpdateProfile();
-        }
-        else
-        {
-            Debug.LogWarning("LightingManager2D 또는 Profile이 설정되지 않았습니다!");
-        }
     }
     #endregion
 

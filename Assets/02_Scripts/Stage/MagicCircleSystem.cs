@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 /// <summary>
@@ -12,6 +14,10 @@ public class MagicCircleSystem : MonoBehaviour
     [SerializeField] StageManager _stageManager;        //스테이지 매니저 참조
     [SerializeField] MagicCircle _magicCircle;          //마법진 컴포넌트
     [SerializeField] Hero _hero;
+
+    [Header("----- 마법진 UI -----")]
+    [SerializeField] GameObject _chargingTimer;
+    [SerializeField] Image _chargingTimerBar;
 
     GameObject _magicCircleInstance;    //마법진 인스턴스
     GameObject _bossInstance;           //보스몹 인스턴스
@@ -61,6 +67,9 @@ public class MagicCircleSystem : MonoBehaviour
                 //마법진 초기화
                 _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
 
+                //마법진에서 UI를 찾아서 연결
+                FindUIComponentsInMagicCircle();
+
                 Debug.Log("마법진 시스템 초기화 완료");
             }
             else
@@ -68,6 +77,66 @@ public class MagicCircleSystem : MonoBehaviour
                 Debug.LogError("ObjectSystem에서 생성된 마법진을 찾을 수 없습니다!");
             }
         }
+    }
+
+    void FindUIComponentsInMagicCircle()
+    {
+        if (_magicCircleInstance == null)
+        {
+            Debug.LogError("마법진 인스턴스가 null입니다!");
+            return;
+        }
+
+        // 마법진의 자식 오브젝트들 중에서 캔버스를 찾고, 그 안에서 UI 요소들을 찾음
+        Canvas canvas = _magicCircleInstance.GetComponentInChildren<Canvas>();
+        if (canvas != null)
+        {
+            // chargingTimer라는 이름의 오브젝트를 찾음 (대소문자 구분 없이)
+            Transform chargingTimerTransform = FindChildByName(canvas.transform, "chargingTimer");
+            if (chargingTimerTransform != null)
+            {
+                _chargingTimer = chargingTimerTransform.gameObject;
+
+                // chargingTimerBar라는 이름의 Image 컴포넌트를 찾음
+                Transform chargingTimerBarTransform = FindChildByName(chargingTimerTransform, "chargingTimerBar");
+                if (chargingTimerBarTransform != null)
+                {
+                    _chargingTimerBar = chargingTimerBarTransform.GetComponent<Image>();
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 자식 오브젝트를 이름으로 찾는 헬퍼 함수 (대소문자 구분 없이)
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    Transform FindChildByName(Transform parent, string name)
+    {
+        // 직접 자식들 검색
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            if (child.name.ToLower() == name.ToLower())
+            {
+                return child;
+            }
+        }
+
+        // 재귀적으로 모든 하위 자식들 검색
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            Transform result = FindChildByName(child, name);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -86,6 +155,9 @@ public class MagicCircleSystem : MonoBehaviour
         //마법진 초기화
         _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
 
+        //마법진에서 UI를 찾아서 연결
+        FindUIComponentsInMagicCircle();
+
         Debug.Log("마법진이 ObjectSystem에서 생성되어 초기화되었습니다.");
     }
 
@@ -100,7 +172,15 @@ public class MagicCircleSystem : MonoBehaviour
         Debug.Log("마법진 충전 시작");
 
         if (_magicCircle != null)
+        {
             _magicCircle.SetState(MagicCirclrState.Charging);
+        }
+
+        if (_chargingTimer != null)
+        {
+            _chargingTimer.SetActive(true);
+            Debug.Log("충전 타이머 UI 활성화");
+        }
 
         //보스 소환
         SpawnBoss();
@@ -155,6 +235,7 @@ public class MagicCircleSystem : MonoBehaviour
         while (chargingTimer < chargingTime)
         {
             chargingTimer += Time.deltaTime;
+            _chargingTimerBar.fillAmount = chargingTimer / chargingTime;
             yield return null;
         }
 
@@ -162,10 +243,30 @@ public class MagicCircleSystem : MonoBehaviour
 
         Debug.Log("마법진 충전 완료");
 
+        _chargingTimerBar.fillAmount = 1f;
+
+        // 충전 완료 후 잠시 후 UI 비활성화
+        StartCoroutine(HideChargingUIAfterDelay(2f));
+
         if (_magicCircle != null)
             _magicCircle.SetState(MagicCirclrState.Charged);
 
         CheckStageCompletion();
+    }
+
+    /// <summary>
+    /// 지연 시간 후 충전 UI를 숨기는 코루틴
+    /// </summary>
+    /// <param name="delay"></param>
+    /// <returns></returns>
+    IEnumerator HideChargingUIAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (_chargingTimer != null)
+        {
+            _chargingTimer.SetActive(false);
+        }
     }
 
     /// <summary>
