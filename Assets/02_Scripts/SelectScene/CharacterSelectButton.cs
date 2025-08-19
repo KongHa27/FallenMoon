@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,15 +7,15 @@ using UnityEngine.UI;
 
 public class CharacterSelectButton : MonoBehaviour
 {
-    [Header("----- UI ÄÄÆ÷³ÍÆ® -----")]
+    [Header("----- UI ì»´í¬ë„ŒíŠ¸ -----")]
     [SerializeField] Button _button;
     [SerializeField] Image _characterIconImage;
-    [SerializeField] GameObject _selectedFrame; // ¼±ÅÃ ½Ã È°¼ºÈ­µÇ´Â ÇÁ·¹ÀÓ
+    [SerializeField] GameObject _selectedFrame; // ì„ íƒ ì‹œ í™œì„±í™”ë˜ëŠ” í”„ë ˆì„
 
-    // ÀÌº¥Æ®
+    // ì´ë²¤íŠ¸
     public event Action OnButtonClicked;
 
-    // µ¥ÀÌÅÍ
+    // ë°ì´í„°
     private int _characterIndex;
     private CharacterData _characterData;
     private bool _isSelected = false;
@@ -29,7 +29,7 @@ public class CharacterSelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// Ä³¸¯ÅÍ ¹öÆ° ÃÊ±âÈ­
+    /// ìºë¦­í„° ë²„íŠ¼ ì´ˆê¸°í™”
     /// </summary>
     public void Initialize(int index, CharacterData characterData)
     {
@@ -40,13 +40,13 @@ public class CharacterSelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// UI ¾÷µ¥ÀÌÆ®
+    /// UI ì—…ë°ì´íŠ¸
     /// </summary>
     private void UpdateUI()
     {
         if (_characterData == null) return;
 
-        // Ä³¸¯ÅÍ ¾ÆÀÌÄÜ ¼³Á¤
+        // ìºë¦­í„° ì•„ì´ì½˜ ì„¤ì •
         if (_characterIconImage != null && _characterData.CharacterIcon != null)
         {
             _characterIconImage.sprite = _characterData.CharacterIcon;
@@ -54,13 +54,13 @@ public class CharacterSelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼±ÅÃ »óÅÂ ¼³Á¤
+    /// ì„ íƒ ìƒíƒœ ì„¤ì •
     /// </summary>
     public void SetSelected(bool selected)
     {
         _isSelected = selected;
 
-        // ¼±ÅÃ ÇÁ·¹ÀÓ È°¼ºÈ­/ºñÈ°¼ºÈ­¸¸ Ã³¸®
+        // ì„ íƒ í”„ë ˆì„ í™œì„±í™”/ë¹„í™œì„±í™”ë§Œ ì²˜ë¦¬
         if (_selectedFrame != null)
         {
             _selectedFrame.SetActive(_isSelected);
@@ -68,7 +68,7 @@ public class CharacterSelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// ¹öÆ° Å¬¸¯ ÀÌº¥Æ®
+    /// ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸
     /// </summary>
     private void OnClick()
     {
@@ -76,7 +76,7 @@ public class CharacterSelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// Ä³¸¯ÅÍ µ¥ÀÌÅÍ ¹İÈ¯
+    /// ìºë¦­í„° ë°ì´í„° ë°˜í™˜
     /// </summary>
     public CharacterData GetCharacterData()
     {
@@ -84,7 +84,7 @@ public class CharacterSelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// Ä³¸¯ÅÍ ÀÎµ¦½º ¹İÈ¯
+    /// ìºë¦­í„° ì¸ë±ìŠ¤ ë°˜í™˜
     /// </summary>
     public int GetCharacterIndex()
     {

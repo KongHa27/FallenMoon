@@ -35,7 +35,7 @@ public class HeroModel : BattlerModel
 
     private void Start()
     {
-        _hpBar = GameObject.Find("HpBar").GetComponent<Image>();
+        
     }
 
     public void SetHeroData(HeroData heroData)
@@ -54,6 +54,8 @@ public class HeroModel : BattlerModel
     /// </summary>
     public void Initialize()
     {
+        _hpBar = GameObject.Find("HpBar").GetComponent<Image>();
+
         _maxHp = _data.MaxHp;
         _curHp = _maxHp;
         _hpRegen = _data.HpRegen;

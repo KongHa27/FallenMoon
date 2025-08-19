@@ -14,6 +14,9 @@ public class PlayScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(DelayedInitializeHero());
+        _interactionManager.Initialize(_hero);
+
         //이동 입력 이벤트 구독
         _inputHandler.OnMoveInput += OnMoveInput;
         //점프 입력 이벤트 구독
@@ -30,10 +33,6 @@ public class PlayScene : MonoBehaviour
         _inputHandler.OnUseItemInput += OnUseItemInput;
         //상호작용 입력 이벤트 구독
         _inputHandler.OnInteractionInput += OnInteractionInput;
-
-        StartCoroutine(DelayedInitializeHero());
-        _interactionManager.Initialize(_hero);
-
     }
 
     IEnumerator DelayedInitializeHero()

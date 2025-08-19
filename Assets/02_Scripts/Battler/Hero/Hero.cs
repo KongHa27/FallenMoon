@@ -347,6 +347,9 @@ public class Hero : MonoBehaviour, ILadderUser
     /// <returns></returns>
     private bool IsMovementBlocked()
     {
+        if (_skillManager == null)
+            return false;
+
         // 모든 스킬을 체크해서 이동을 차단하는 스킬이 있는지 확인
         foreach (SkillManager.SkillType skillType in System.Enum.GetValues(typeof(SkillManager.SkillType)))
         {

@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.U2D.Animation;
@@ -7,19 +7,19 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("----- Ä³¸¯ÅÍ ÇÁ¸®ÆÕ ¸ñ·Ï -----")]
+    [Header("----- ìºë¦­í„° ë°ì´í„° ëª©ë¡ -----")]
     [SerializeField] CharacterData[] _characterDatas;
 
-    [Header("----- ¾À ÀÌ¸§ -----")]
+    [Header("----- ì”¬ ì´ë¦„ -----")]
     [SerializeField] string _titleSceneName = "0_Title";
     [SerializeField] string _selectSceneName = "1_Select";
     [SerializeField] string _playSceneName = "2_Game";
 
-    // ¼±ÅÃµÈ µ¥ÀÌÅÍ
+    // ì„ íƒëœ ë°ì´í„°
     private int _selectedCharacterIndex = 0;
     private DifficultyManager.SelectDifficulty _selectedDifficulty = DifficultyManager.SelectDifficulty.Normal;
 
-    // °ÔÀÓ »óÅÂ
+    // ê²Œì„ ìƒíƒœ
     public enum GameState
     {
         Title,
@@ -31,16 +31,16 @@ public class GameManager : MonoBehaviour
     private GameState _currentState = GameState.Title;
 
     /// <summary>
-    /// °ÔÀÓ ¸Å´ÏÀú ½Ì±ÛÅæ
+    /// ê²Œì„ ë§¤ë‹ˆì € ì‹±ê¸€í†¤
     /// </summary>
     public static GameManager Instance { get; private set; }
 
-    // ÀÌº¥Æ®
+    // ì´ë²¤íŠ¸
     public event Action<int> OnCharacterSelected;
     public event Action<DifficultyManager.SelectDifficulty> OnDifficultySelected;
     public event Action<GameState> OnGameStateChanged;
 
-    // ÇÁ·ÎÆÛÆ¼
+    // í”„ë¡œí¼í‹°
     public CharacterData[] CharacterDatas => _characterDatas;
     public int SelectedCharacterIndex => _selectedCharacterIndex;
     public DifficultyManager.SelectDifficulty SelectedDifficulty => _selectedDifficulty;
@@ -48,13 +48,13 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        // ½Ì±ÛÅæ ¼³Á¤
+        // ì‹±ê¸€í†¤ ì„¤ì •
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // ¾À ·Îµå ÀÌº¥Æ® ±¸µ¶
+            // ì”¬ ë¡œë“œ ì´ë²¤íŠ¸ êµ¬ë…
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ¾ÀÀÌ ·ÎµåµÉ ¶§ È£ÃâµÇ´Â ÇÔ¼ö
+    /// ì”¬ì´ ë¡œë“œë  ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
     /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// °ÔÀÓ »óÅÂ º¯°æ
+    /// ê²Œì„ ìƒíƒœ ë³€ê²½
     /// </summary>
     public void SetGameState(GameState newState)
     {
@@ -104,13 +104,13 @@ public class GameManager : MonoBehaviour
             _currentState = newState;
             OnGameStateChanged?.Invoke(_currentState);
 
-            Debug.Log($"°ÔÀÓ »óÅÂ º¯°æ: {oldState} ¡æ {_currentState}");
+            Debug.Log($"ê²Œì„ ìƒíƒœ ë³€ê²½: {oldState} â†’ {_currentState}");
         }
     }
 
-    #region Ä³¸¯ÅÍ ¼±ÅÃ
+    #region ìºë¦­í„° ì„ íƒ
     /// <summary>
-    /// Ä³¸¯ÅÍ ¼±ÅÃ
+    /// ìºë¦­í„° ì„ íƒ
     /// </summary>
     public void SelectCharacter(int characterIndex)
     {
@@ -119,16 +119,16 @@ public class GameManager : MonoBehaviour
             _selectedCharacterIndex = characterIndex;
             OnCharacterSelected?.Invoke(_selectedCharacterIndex);
 
-            Debug.Log($"Ä³¸¯ÅÍ ¼±ÅÃ: {_characterDatas[_selectedCharacterIndex].CharacterName}");
+            Debug.Log($"ìºë¦­í„° ì„ íƒ: {_characterDatas[_selectedCharacterIndex].CharacterName}");
         }
         else
         {
-            Debug.LogError($"Àß¸øµÈ Ä³¸¯ÅÍ ÀÎµ¦½º: {characterIndex}");
+            Debug.LogError($"ì˜ëª»ëœ ìºë¦­í„° ì¸ë±ìŠ¤: {characterIndex}");
         }
     }
 
     /// <summary>
-    /// ¼±ÅÃµÈ Ä³¸¯ÅÍ µ¥ÀÌÅÍ ¹İÈ¯
+    /// ì„ íƒëœ ìºë¦­í„° ë°ì´í„° ë°˜í™˜
     /// </summary>
     public CharacterData GetSelectedCharacterData()
     {
@@ -140,22 +140,22 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    #region ³­ÀÌµµ ¼±ÅÃ
+    #region ë‚œì´ë„ ì„ íƒ
     /// <summary>
-    /// ³­ÀÌµµ ¼±ÅÃ
+    /// ë‚œì´ë„ ì„ íƒ
     /// </summary>
     public void SelectDifficulty(DifficultyManager.SelectDifficulty difficulty)
     {
         _selectedDifficulty = difficulty;
         OnDifficultySelected?.Invoke(_selectedDifficulty);
 
-        Debug.Log($"³­ÀÌµµ ¼±ÅÃ: {difficulty}");
+        Debug.Log($"ë‚œì´ë„ ì„ íƒ: {difficulty}");
     }
     #endregion
 
-    #region ¾À ÀüÈ¯
+    #region ì”¬ ì „í™˜
     /// <summary>
-    /// Å¸ÀÌÆ² ¾ÀÀ¸·Î ÀÌµ¿
+    /// íƒ€ì´í‹€ ì”¬ìœ¼ë¡œ ì´ë™
     /// </summary>
     public void LoadTitleScene()
     {
@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ¼±ÅÃ ¾ÀÀ¸·Î ÀÌµ¿
+    /// ì„ íƒ ì”¬ìœ¼ë¡œ ì´ë™
     /// </summary>
     public void LoadSelectScene()
     {
@@ -171,14 +171,14 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇÃ·¹ÀÌ ¾ÀÀ¸·Î ÀÌµ¿
+    /// í”Œë ˆì´ ì”¬ìœ¼ë¡œ ì´ë™
     /// </summary>
     public void LoadPlayScene()
     {
-        // Ä³¸¯ÅÍ¿Í ³­ÀÌµµ°¡ ¼±ÅÃµÇ¾ú´ÂÁö È®ÀÎ
+        // ìºë¦­í„°ì™€ ë‚œì´ë„ê°€ ì„ íƒë˜ì—ˆëŠ”ì§€ í™•ì¸
         if (GetSelectedCharacterData() == null)
         {
-            Debug.LogError("Ä³¸¯ÅÍ°¡ ¼±ÅÃµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("ìºë¦­í„°ê°€ ì„ íƒë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
             return;
         }
 
@@ -186,28 +186,28 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    #region ÇÃ·¹ÀÌ ¾À ÃÊ±âÈ­
+    #region í”Œë ˆì´ ì”¬ ì´ˆê¸°í™”
     /// <summary>
-    /// ÇÃ·¹ÀÌ ¾À ÃÊ±âÈ­ (Ä³¸¯ÅÍ ÇÁ¸®ÆÕ »ı¼º, ³­ÀÌµµ ¼³Á¤)
+    /// í”Œë ˆì´ ì”¬ ì´ˆê¸°í™” (ìºë¦­í„° í”„ë¦¬íŒ¹ ìƒì„±, ë‚œì´ë„ ì„¤ì •)
     /// </summary>
     private void InitializePlayScene()
     {
-        // ³­ÀÌµµ ¼³Á¤
+        // ë‚œì´ë„ ì„¤ì •
         if (DifficultyManager.Instance != null)
         {
             DifficultyManager.Instance.SetSelectedDifficulty(_selectedDifficulty);
         }
 
-        // Ä³¸¯ÅÍ ÇÁ¸®ÆÕ »ı¼º
+        // ìºë¦­í„° í”„ë¦¬íŒ¹ ìƒì„±
         StartCoroutine(SpawnSelectedCharacter());
     }
 
     /// <summary>
-    /// ¼±ÅÃµÈ Ä³¸¯ÅÍ ÇÁ¸®ÆÕÀ» Hero °ÔÀÓ¿ÀºêÁ§Æ®ÀÇ ÀÚ½ÄÀ¸·Î »ı¼º
+    /// ì„ íƒëœ ìºë¦­í„° í”„ë¦¬íŒ¹ì„ Hero ê²Œì„ì˜¤ë¸Œì íŠ¸ì˜ ìì‹ìœ¼ë¡œ ìƒì„±
     /// </summary>
     private System.Collections.IEnumerator SpawnSelectedCharacter()
     {
-        // Hero °ÔÀÓ¿ÀºêÁ§Æ®¸¦ Ã£À» ¶§±îÁö ´ë±â
+        // Hero ê²Œì„ì˜¤ë¸Œì íŠ¸ë¥¼ ì°¾ì„ ë•Œê¹Œì§€ ëŒ€ê¸°
         Hero heroController = null;
         while (heroController == null)
         {
@@ -218,11 +218,11 @@ public class GameManager : MonoBehaviour
         CharacterData selectedData = GetSelectedCharacterData();
         if (selectedData != null && selectedData.CharacterPrefab != null)
         {
-            // ±âÁ¸ ÀÚ½Ä ¿ÀºêÁ§Æ®°¡ ÀÖ´Ù¸é Á¦°Å
+            // ê¸°ì¡´ ìì‹ ì˜¤ë¸Œì íŠ¸ê°€ ìˆë‹¤ë©´ ì œê±°
             for (int i = heroController.transform.childCount - 1; i >= 0; i--)
             {
                 Transform child = heroController.transform.GetChild(i);
-                // Ä³¸¯ÅÍ °ü·Ã ÄÄÆ÷³ÍÆ®¸¦ °¡Áø ÀÚ½Ä¸¸ Á¦°Å
+                // ìºë¦­í„° ê´€ë ¨ ì»´í¬ë„ŒíŠ¸ë¥¼ ê°€ì§„ ìì‹ë§Œ ì œê±°
                 if (child.GetComponent<HeroModel>() != null ||
                     child.GetComponent<SpriteRenderer>() != null ||
                     child.GetComponent<Animator>() != null)
@@ -231,29 +231,29 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            // »õ Ä³¸¯ÅÍ ÇÁ¸®ÆÕ »ı¼º
+            // ìƒˆ ìºë¦­í„° í”„ë¦¬íŒ¹ ìƒì„±
             GameObject characterInstance = Instantiate(selectedData.CharacterPrefab, heroController.transform);
 
-            // ·ÎÄÃ À§Ä¡¿Í È¸Àü ÃÊ±âÈ­
+            // ë¡œì»¬ ìœ„ì¹˜ì™€ íšŒì „ ì´ˆê¸°í™”
             characterInstance.transform.localPosition = Vector3.zero;
             characterInstance.transform.localRotation = Quaternion.identity;
             characterInstance.transform.localScale = Vector3.one;
 
-            // Hero ÄÁÆ®·Ñ·¯ ÃÊ±âÈ­
+            // Hero ì»¨íŠ¸ë¡¤ëŸ¬ ì´ˆê¸°í™”
             heroController.InitializeWithPrefab();
 
-            Debug.Log($"Ä³¸¯ÅÍ ÇÁ¸®ÆÕ »ı¼º ¿Ï·á: {selectedData.CharacterName}");
+            Debug.Log($"ìºë¦­í„° í”„ë¦¬íŒ¹ ìƒì„± ì™„ë£Œ: {selectedData.CharacterName}");
         }
         else
         {
-            Debug.LogError("¼±ÅÃµÈ Ä³¸¯ÅÍ µ¥ÀÌÅÍ ¶Ç´Â ÇÁ¸®ÆÕÀÌ ¾ø½À´Ï´Ù!");
+            Debug.LogError("ì„ íƒëœ ìºë¦­í„° ë°ì´í„° ë˜ëŠ” í”„ë¦¬íŒ¹ì´ ì—†ìŠµë‹ˆë‹¤!");
         }
     }
     #endregion
 
-    #region °ÔÀÓ Á¾·á/Àç½ÃÀÛ
+    #region ê²Œì„ ì¢…ë£Œ/ì¬ì‹œì‘
     /// <summary>
-    /// °ÔÀÓ Àç½ÃÀÛ (¼±ÅÃ ¾ÀÀ¸·Î)
+    /// ê²Œì„ ì¬ì‹œì‘ (ì„ íƒ ì”¬ìœ¼ë¡œ)
     /// </summary>
     public void RestartGame()
     {
@@ -261,7 +261,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// °ÔÀÓ Á¾·á
+    /// ê²Œì„ ì¢…ë£Œ
     /// </summary>
     public void QuitGame()
     {
