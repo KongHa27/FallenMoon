@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterSelectUI : MonoBehaviour
+public class SelectSceneUI : MonoBehaviour
 {
     [Header("----- 캐릭터 정보 UI -----")]
     [SerializeField] TextMeshProUGUI _characterNameText;

@@ -11,7 +11,7 @@ public class DifficultySelectButton : MonoBehaviour
     [Header("----- 버튼 컴포넌트 -----")]
     [SerializeField] Button _button;
 
-    private CharacterSelectUI _selectUI;
+    private SelectSceneUI _selectUI;
 
     private void Awake()
     {
@@ -21,7 +21,6 @@ public class DifficultySelectButton : MonoBehaviour
 
     private void Start()
     {
-        // CharacterSelectUI 찾기
         _selectUI = FindObjectOfType<CharacterSelectUI>();
 
         // 버튼 이벤트 연결
