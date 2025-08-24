@@ -8,7 +8,7 @@ public class LadderMover : MonoBehaviour
 {
     [Header("----- 사다리 설정 -----")]
     [SerializeField] float _climbSpeed = 5f;
-    [SerializeField] float _gravityScale = 1f;
+    [SerializeField] float _gravityScale = 5f;
 
     /// <summary>
     /// 사다리 오르는 상태 변화 이벤트

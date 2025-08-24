@@ -575,7 +575,8 @@ MonoBehaviour:
   _interactionCooldown: 0
   _interactionText: {fileID: 3187909165544626164}
   _magicCircleSystem: {fileID: 0}
-  _stateSprites:
-  - {fileID: 21300000, guid: 94bb60b8383cadc4e86dc2cae603022c, type: 2}
-  - {fileID: 21300000, guid: b7e242631f5e28944816c28fc853ada2, type: 2}
-  - {fileID: 21300000, guid: 22d57d6cea53b0847ac54dcbd4b67427, type: 2}
+  _magicCircleCtrl: {fileID: 0}
+  _ringRenderer: {fileID: 0}
+  _coreRenderer: {fileID: 0}
+  _runesParent: {fileID: 0}
+  _runeRenderers: []

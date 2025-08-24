@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,39 +6,38 @@ using UnityEngine.UI;
 
 public class CharacterSelectUI : MonoBehaviour
 {
-    [Header("----- Ä³¸¯ÅÍ Á¤º¸ UI -----")]
+    [Header("----- ìºë¦­í„° ì •ë³´ UI -----")]
     [SerializeField] TextMeshProUGUI _characterNameText;
 
-    [Header("----- 2D Ä³¸¯ÅÍ ÇÁ¸®ºä -----")]
-    [SerializeField] Transform _previewSpawnPoint; // ÇÁ¸®ºä Ä³¸¯ÅÍ°¡ »ı¼ºµÉ À§Ä¡
-    [SerializeField] SpriteRenderer _previewSpriteRenderer; // ÇÁ¸®ºä¿ë ½ºÇÁ¶óÀÌÆ® ·»´õ·¯
+    [Header("----- 2D ìºë¦­í„° í”„ë¦¬ë·° -----")]
+    [SerializeField] Transform _previewSpawnPoint; // í”„ë¦¬ë·° ìºë¦­í„°ê°€ ìƒì„±ë  ìœ„ì¹˜
+    [SerializeField] SpriteRenderer _previewSpriteRenderer; // í”„ë¦¬ë·°ìš© ìŠ¤í”„ë¼ì´íŠ¸ ë Œë”ëŸ¬
 
-    [Header("----- Ä³¸¯ÅÍ ¼±ÅÃ ¹öÆ°µé -----")]
+    [Header("----- ìºë¦­í„° ì„ íƒ ë²„íŠ¼ë“¤ -----")]
     [SerializeField] CharacterSelectButton[] _characterButtons;
 
-    [Header("----- ³­ÀÌµµ ¼±ÅÃ UI -----")]
+    [Header("----- ë‚œì´ë„ ì„ íƒ UI -----")]
     [SerializeField] Button[] _difficultyButtons;
+    [SerializeField] GameObject[] _difficultyHighlights;
     [SerializeField] TextMeshProUGUI _selectedDifficultyText;
-    [SerializeField] Color _selectedButtonColor = Color.yellow;
-    [SerializeField] Color _normalButtonColor = Color.white;
 
-    [Header("----- °ÔÀÓ ½ÃÀÛ ¹öÆ° -----")]
+    [Header("----- ê²Œì„ ì‹œì‘ ë²„íŠ¼ -----")]
     [SerializeField] Button _startGameButton;
     [SerializeField] Button _backButton;
 
-    // ÇöÀç ¼±ÅÃ »óÅÂ
+    // í˜„ì¬ ì„ íƒ ìƒíƒœ
     private int _currentCharacterIndex = 0;
     private DifficultyManager.SelectDifficulty _currentDifficulty = DifficultyManager.SelectDifficulty.Normal;
 
-    // ÇÁ¸®ºä ¾Ö´Ï¸ŞÀÌ¼Ç °ü·Ã
+    // í”„ë¦¬ë·° ì• ë‹ˆë©”ì´ì…˜ ê´€ë ¨
     private Coroutine _previewAnimationCoroutine;
 
-    private void Start()
+    private void Awake()
     {
         InitializeUI();
         SetupButtons();
 
-        // ÃÊ±â ¼³Á¤ (Ä³¸¯ÅÍ´Â ¼±ÅÃÇÏÁö ¾Ê°í ÇÁ¸®ºä¸¸ ¼û±è)
+        // ì´ˆê¸° ì„¤ì • (ìºë¦­í„°ëŠ” ì„ íƒí•˜ì§€ ì•Šê³  í”„ë¦¬ë·°ë§Œ ìˆ¨ê¹€)
         if (_previewSpriteRenderer != null)
         {
             _previewSpriteRenderer.gameObject.SetActive(false);
@@ -48,54 +47,54 @@ public class CharacterSelectUI : MonoBehaviour
     }
 
     /// <summary>
-    /// UI ÃÊ±âÈ­
+    /// UI ì´ˆê¸°í™”
     /// </summary>
     private void InitializeUI()
     {
         if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManager Instance°¡ ¾ø½À´Ï´Ù!");
+            Debug.LogError("GameManager Instanceê°€ ì—†ìŠµë‹ˆë‹¤!");
             return;
         }
 
         CharacterData[] characters = GameManager.Instance.CharacterDatas;
 
-        // Ä³¸¯ÅÍ ¹öÆ°µé ÃÊ±âÈ­
+        // ìºë¦­í„° ë²„íŠ¼ë“¤ ì´ˆê¸°í™”
         for (int i = 0; i < _characterButtons.Length; i++)
         {
             if (i < characters.Length)
             {
-                // Ä³¸¯ÅÍ µ¥ÀÌÅÍ°¡ ÀÖ´Â ¹öÆ°µéÀº ÃÊ±âÈ­
+                // ìºë¦­í„° ë°ì´í„°ê°€ ìˆëŠ” ë²„íŠ¼ë“¤ì€ ì´ˆê¸°í™”
                 _characterButtons[i].Initialize(i, characters[i]);
                 _characterButtons[i].gameObject.SetActive(true);
             }
             else
             {
-                // Ä³¸¯ÅÍ µ¥ÀÌÅÍ°¡ ¾ø´Â ¹öÆ°µéÀº ºñÈ°¼ºÈ­
+                // ìºë¦­í„° ë°ì´í„°ê°€ ì—†ëŠ” ë²„íŠ¼ë“¤ì€ ë¹„í™œì„±í™”
                 _characterButtons[i].gameObject.SetActive(false);
             }
         }
 
-        Debug.Log($"Ä³¸¯ÅÍ µ¥ÀÌÅÍ °³¼ö: {characters.Length}");
+        Debug.Log($"ìºë¦­í„° ë°ì´í„° ê°œìˆ˜: {characters.Length}");
         for (int i = 0; i < characters.Length; i++)
         {
-            Debug.Log($"Ä³¸¯ÅÍ {i}: {characters[i].CharacterName}");
+            Debug.Log($"ìºë¦­í„° {i}: {characters[i].CharacterName}");
         }
     }
 
     /// <summary>
-    /// ¹öÆ° ÀÌº¥Æ® ¼³Á¤
+    /// ë²„íŠ¼ ì´ë²¤íŠ¸ ì„¤ì •
     /// </summary>
     private void SetupButtons()
     {
-        // Ä³¸¯ÅÍ ¼±ÅÃ ¹öÆ°µé
+        // ìºë¦­í„° ì„ íƒ ë²„íŠ¼ë“¤
         for (int i = 0; i < _characterButtons.Length; i++)
         {
             int index = i;
             _characterButtons[i].OnButtonClicked += () => SelectCharacter(index);
         }
 
-        // ³­ÀÌµµ ¼±ÅÃ ¹öÆ°µé
+        // ë‚œì´ë„ ì„ íƒ ë²„íŠ¼ë“¤
         for (int i = 0; i < _difficultyButtons.Length; i++)
         {
             int difficultyIndex = i;
@@ -103,15 +102,15 @@ public class CharacterSelectUI : MonoBehaviour
                 SelectDifficulty((DifficultyManager.SelectDifficulty)difficultyIndex));
         }
 
-        // °ÔÀÓ ½ÃÀÛ ¹öÆ°
+        // ê²Œì„ ì‹œì‘ ë²„íŠ¼
         _startGameButton.onClick.AddListener(StartGame);
 
-        // µÚ·Î°¡±â ¹öÆ°
+        // ë’¤ë¡œê°€ê¸° ë²„íŠ¼
         _backButton.onClick.AddListener(GoBack);
     }
 
     /// <summary>
-    /// Ä³¸¯ÅÍ ¼±ÅÃ
+    /// ìºë¦­í„° ì„ íƒ
     /// </summary>
     public void SelectCharacter(int characterIndex)
     {
@@ -123,21 +122,18 @@ public class CharacterSelectUI : MonoBehaviour
         _currentCharacterIndex = characterIndex;
         CharacterData selectedCharacter = characters[characterIndex];
 
-        Debug.Log($"Ä³¸¯ÅÍ ¼±ÅÃ: {selectedCharacter.CharacterName} (ÀÎµ¦½º: {characterIndex})");
+        Debug.Log($"ìºë¦­í„° ì„ íƒ: {selectedCharacter.CharacterName} (ì¸ë±ìŠ¤: {characterIndex})");
 
-        // UI ¾÷µ¥ÀÌÆ®
+        // UI ì—…ë°ì´íŠ¸
         UpdateCharacterInfo(selectedCharacter);
         UpdateCharacterButtons(characterIndex);
 
-        // 2D Ä³¸¯ÅÍ ÇÁ¸®ºä ¾÷µ¥ÀÌÆ®
+        // 2D ìºë¦­í„° í”„ë¦¬ë·° ì—…ë°ì´íŠ¸
         UpdateCharacterPreview(selectedCharacter);
-
-        // GameManager¿¡ ¼±ÅÃ Á¤º¸ Àü´Ş
-        GameManager.Instance.SelectCharacter(characterIndex);
     }
 
     /// <summary>
-    /// Ä³¸¯ÅÍ Á¤º¸ UI ¾÷µ¥ÀÌÆ®
+    /// ìºë¦­í„° ì •ë³´ UI ì—…ë°ì´íŠ¸
     /// </summary>
     private void UpdateCharacterInfo(CharacterData characterData)
     {
@@ -145,7 +141,7 @@ public class CharacterSelectUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Ä³¸¯ÅÍ ¼±ÅÃ ¹öÆ°µé »óÅÂ ¾÷µ¥ÀÌÆ®
+    /// ìºë¦­í„° ì„ íƒ ë²„íŠ¼ë“¤ ìƒíƒœ ì—…ë°ì´íŠ¸
     /// </summary>
     private void UpdateCharacterButtons(int selectedIndex)
     {
@@ -156,38 +152,38 @@ public class CharacterSelectUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 2D Ä³¸¯ÅÍ ÇÁ¸®ºä ¾÷µ¥ÀÌÆ®
+    /// 2D ìºë¦­í„° í”„ë¦¬ë·° ì—…ë°ì´íŠ¸
     /// </summary>
     private void UpdateCharacterPreview(CharacterData characterData)
     {
-        // ±âÁ¸ ¾Ö´Ï¸ŞÀÌ¼Ç ÁßÁö
+        // ê¸°ì¡´ ì• ë‹ˆë©”ì´ì…˜ ì¤‘ì§€
         if (_previewAnimationCoroutine != null)
         {
             StopCoroutine(_previewAnimationCoroutine);
         }
 
-        // ÇÁ¸®ºä ½ºÇÁ¶óÀÌÆ® ·»´õ·¯ È°¼ºÈ­
+        // í”„ë¦¬ë·° ìŠ¤í”„ë¼ì´íŠ¸ ë Œë”ëŸ¬ í™œì„±í™”
         if (_previewSpriteRenderer != null)
         {
             _previewSpriteRenderer.gameObject.SetActive(true);
 
-            // ¾ÆÀÌµé ¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛ
+            // ì•„ì´ë“¤ ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘
             if (characterData.PreviewIdleSprites != null && characterData.PreviewIdleSprites.Length > 0)
             {
                 _previewAnimationCoroutine = StartCoroutine(PlayPreviewIdleAnimation(characterData));
             }
             else
             {
-                // ½ºÇÁ¶óÀÌÆ® ¹è¿­ÀÌ ¾øÀ¸¸é ÇÁ¸®ºä ½ºÇÁ¶óÀÌÆ® »ç¿ë
+                // ìŠ¤í”„ë¼ì´íŠ¸ ë°°ì—´ì´ ì—†ìœ¼ë©´ í”„ë¦¬ë·° ìŠ¤í”„ë¼ì´íŠ¸ ì‚¬ìš©
                 _previewSpriteRenderer.sprite = characterData.CharacterPreviewSprite;
             }
 
-            Debug.Log($"Ä³¸¯ÅÍ ÇÁ¸®ºä ¾÷µ¥ÀÌÆ®: {characterData.CharacterName}");
+            Debug.Log($"ìºë¦­í„° í”„ë¦¬ë·° ì—…ë°ì´íŠ¸: {characterData.CharacterName}");
         }
     }
 
     /// <summary>
-    /// ÇÁ¸®ºä ¾ÆÀÌµé ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+    /// í”„ë¦¬ë·° ì•„ì´ë“¤ ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
     /// </summary>
     private IEnumerator PlayPreviewIdleAnimation(CharacterData characterData)
     {
@@ -204,57 +200,58 @@ public class CharacterSelectUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ³­ÀÌµµ ¼±ÅÃ
+    /// ë‚œì´ë„ ì„ íƒ
     /// </summary>
     public void SelectDifficulty(DifficultyManager.SelectDifficulty difficulty)
     {
         _currentDifficulty = difficulty;
 
-        // UI ¾÷µ¥ÀÌÆ®
+        // UI ì—…ë°ì´íŠ¸
         UpdateDifficultyButtons((int)difficulty);
         UpdateDifficultyText(difficulty);
-
-        // GameManager¿¡ ¼±ÅÃ Á¤º¸ Àü´Ş
-        GameManager.Instance.SelectDifficulty(difficulty);
     }
 
     /// <summary>
-    /// ³­ÀÌµµ ¹öÆ°µé »óÅÂ ¾÷µ¥ÀÌÆ®
+    /// ë‚œì´ë„ ë²„íŠ¼ë“¤ ìƒíƒœ ì—…ë°ì´íŠ¸
     /// </summary>
     private void UpdateDifficultyButtons(int selectedIndex)
     {
-        for (int i = 0; i < _difficultyButtons.Length; i++)
+        for (int i = 0; i < _difficultyHighlights.Length; i++)
         {
-            ColorBlock colors = _difficultyButtons[i].colors;
-            colors.normalColor = (i == selectedIndex) ? _selectedButtonColor : _normalButtonColor;
-            _difficultyButtons[i].colors = colors;
+            _difficultyHighlights[i].SetActive(i == selectedIndex);
         }
     }
 
     /// <summary>
-    /// ¼±ÅÃµÈ ³­ÀÌµµ ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®
+    /// ì„ íƒëœ ë‚œì´ë„ í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
     /// </summary>
     private void UpdateDifficultyText(DifficultyManager.SelectDifficulty difficulty)
     {
         if (DifficultyManager.Instance != null)
         {
-            _selectedDifficultyText.text = $"¼±ÅÃµÈ ³­ÀÌµµ: {DifficultyManager.Instance.GetDifficultyName(difficulty)}";
+            string diffName = DifficultyManager.Instance.GetDifficultyName(difficulty);
+
+            _selectedDifficultyText.text = diffName;
         }
     }
 
     /// <summary>
-    /// °ÔÀÓ ½ÃÀÛ
+    /// ê²Œì„ ì‹œì‘
     /// </summary>
     private void StartGame()
     {
         if (GameManager.Instance != null)
         {
+            GameManager.Instance.SelectCharacter(_currentCharacterIndex);
+
+            GameManager.Instance.SelectDifficulty(_currentDifficulty);
+
             GameManager.Instance.LoadPlayScene();
         }
     }
 
     /// <summary>
-    /// µÚ·Î°¡±â
+    /// ë’¤ë¡œê°€ê¸°
     /// </summary>
     private void GoBack()
     {
@@ -265,7 +262,7 @@ public class CharacterSelectUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ¾À ºñÈ°¼ºÈ­ ½Ã ¾Ö´Ï¸ŞÀÌ¼Ç Á¤¸®
+    /// ì”¬ ë¹„í™œì„±í™” ì‹œ ì• ë‹ˆë©”ì´ì…˜ ì •ë¦¬
     /// </summary>
     private void OnDisable()
     {

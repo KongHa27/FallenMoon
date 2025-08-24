@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a054ab590dc8ff74fab5b2f45ab832d7, type: 3}
+  m_Name: StageData_2
+  m_EditorClassIdentifier: 
+  _stageNumber: 2
+  _stageName: "\uC228\uACA8\uC9C4 \uB208\uC758 \uACC4\uACE1"
+  _mapPrefabs:
+  - {fileID: 5229534534718044705, guid: 2cc1d2718e919a0488a01035fdd5da4b, type: 3}
+  - {fileID: 5229534534718044705, guid: 7766d6c6aff6cd743b986e87639fc981, type: 3}
+  - {fileID: 5229534534718044705, guid: 48f13839af43f5248aafaeebaba9b764, type: 3}
+  _mapNames:
+  - "\uB208\uC758 \uACC4\uACE1_1"
+  - "\uB208\uC758 \uACC4\uACE1_2"
+  - "\uB208\uC758 \uACC4\uACE1_3"
+  _bossPrefab: {fileID: 8719530476096001677, guid: f4f213d2b8f5ea34eb24fe903aebe467, type: 3}
+  _chargingTime: 90

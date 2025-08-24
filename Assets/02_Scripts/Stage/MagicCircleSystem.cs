@@ -65,7 +65,7 @@ public class MagicCircleSystem : MonoBehaviour
                     _magicCircle = _magicCircleInstance.AddComponent<MagicCircle>();
 
                 //마법진 초기화
-                _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
+                _magicCircle.Initialize(this);
 
                 //마법진에서 UI를 찾아서 연결
                 FindUIComponentsInMagicCircle();
@@ -153,7 +153,7 @@ public class MagicCircleSystem : MonoBehaviour
             _magicCircle = _magicCircleInstance.AddComponent<MagicCircle>();
 
         //마법진 초기화
-        _magicCircle.Initialize(this, _curStageData.ChargingAnimationSpeed);
+        _magicCircle.Initialize(this);
 
         //마법진에서 UI를 찾아서 연결
         FindUIComponentsInMagicCircle();

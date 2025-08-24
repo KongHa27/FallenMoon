@@ -1,14 +1,14 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DifficultySelectButton : MonoBehaviour
 {
-    [Header("----- ³­ÀÌµµ ¼³Á¤ -----")]
+    [Header("----- ë‚œì´ë„ ì„¤ì • -----")]
     [SerializeField] DifficultyManager.SelectDifficulty _difficulty;
 
-    [Header("----- ¹öÆ° ÄÄÆ÷³ÍÆ® -----")]
+    [Header("----- ë²„íŠ¼ ì»´í¬ë„ŒíŠ¸ -----")]
     [SerializeField] Button _button;
 
     private CharacterSelectUI _selectUI;
@@ -21,10 +21,10 @@ public class DifficultySelectButton : MonoBehaviour
 
     private void Start()
     {
-        // CharacterSelectUI Ã£±â
+        // CharacterSelectUI ì°¾ê¸°
         _selectUI = FindObjectOfType<CharacterSelectUI>();
 
-        // ¹öÆ° ÀÌº¥Æ® ¿¬°á
+        // ë²„íŠ¼ ì´ë²¤íŠ¸ ì—°ê²°
         if (_button != null)
         {
             _button.onClick.AddListener(OnButtonClick);
@@ -32,7 +32,7 @@ public class DifficultySelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// Inspector¿¡¼­ È£Ãâ °¡´ÉÇÑ ÇÔ¼öµé (°¢ ³­ÀÌµµº°)
+    /// Inspectorì—ì„œ í˜¸ì¶œ ê°€ëŠ¥í•œ í•¨ìˆ˜ë“¤ (ê° ë‚œì´ë„ë³„)
     /// </summary>
     public void SelectEasy()
     {
@@ -55,7 +55,7 @@ public class DifficultySelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// ¹öÆ° Å¬¸¯ ½Ã È£Ãâ (ÄÚµå¿¡¼­ ÀÚµ¿ ¿¬°á)
+    /// ë²„íŠ¼ í´ë¦­ ì‹œ í˜¸ì¶œ (ì½”ë“œì—ì„œ ìë™ ì—°ê²°)
     /// </summary>
     private void OnButtonClick()
     {
@@ -63,7 +63,7 @@ public class DifficultySelectButton : MonoBehaviour
     }
 
     /// <summary>
-    /// ³­ÀÌµµ ¼±ÅÃ ½ÇÇà
+    /// ë‚œì´ë„ ì„ íƒ ì‹¤í–‰
     /// </summary>
     private void SelectDifficulty(DifficultyManager.SelectDifficulty difficulty)
     {
@@ -73,15 +73,15 @@ public class DifficultySelectButton : MonoBehaviour
         }
         else if (GameManager.Instance != null)
         {
-            // CharacterSelectUI°¡ ¾ø´Ù¸é Á÷Á¢ GameManager È£Ãâ
+            // CharacterSelectUIê°€ ì—†ë‹¤ë©´ ì§ì ‘ GameManager í˜¸ì¶œ
             GameManager.Instance.SelectDifficulty(difficulty);
         }
 
-        Debug.Log($"³­ÀÌµµ ¼±ÅÃ: {difficulty}");
+        Debug.Log($"ë‚œì´ë„ ì„ íƒ: {difficulty}");
     }
 
     /// <summary>
-    /// Inspector¿¡¼­ ³­ÀÌµµ ¼³Á¤ (¿¡µğÅÍ Àü¿ë)
+    /// Inspectorì—ì„œ ë‚œì´ë„ ì„¤ì • (ì—ë””í„° ì „ìš©)
     /// </summary>
     public void SetDifficulty(DifficultyManager.SelectDifficulty difficulty)
     {
