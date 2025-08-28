@@ -93,6 +93,7 @@ public class InteractionManager : MonoBehaviour
     {
         if (_currentInteractable != null && _currentInteractable.CanInteract)
         {
+            _player.Interacte();
             _currentInteractable.Interact(_player.gameObject);
 
             // 상호작용 후 다시 체크 (1회성 오브젝트의 경우 CanInteract가 false가 될 수 있음)

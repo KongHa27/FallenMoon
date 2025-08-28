@@ -19,6 +19,14 @@ public class MagicCircleSystem : MonoBehaviour
     [SerializeField] GameObject _chargingTimer;
     [SerializeField] Image _chargingTimerBar;
 
+    [Header("----- 빛무리 효과 -----")]
+    [SerializeField] ParticleSystem _lightMoteEffectPrefab; // 빛무리 파티클 프리팹
+    [SerializeField] float _effectRadius = 15f;             // 효과가 나타나는 최대 반경
+    [SerializeField] float _particleSpeed = 1.5f;             // 파티클이 마법진으로 흘러가는 속도
+    [SerializeField] float _maxEmissionRate = 25f;          // 가장 가까울 때의 파티클 방출률
+    [SerializeField] float _minEmissionRate = 5f;           // 가장 멀 때(반경 끝)의 파티클 방출률
+    ParticleSystem _lightMoteEffectInstance;    // 생성된 빛무리 파티클 시스템 인스턴스
+
     GameObject _magicCircleInstance;    //마법진 인스턴스
     GameObject _bossInstance;           //보스몹 인스턴스
     StageData _curStageData;            //현재 스테이지 데이터
@@ -26,6 +34,11 @@ public class MagicCircleSystem : MonoBehaviour
     bool _isCharging = false;           //충전 중인지 여부
     bool _isCharged = false;            //충전 완료 했는지 여부
     bool _isBossDead = false;           //보스가 죽었는지 여부
+
+    private void Update()
+    {
+        HandleLightMoteEft();
+    }
 
     public void Initialize(StageData data, StageManager manager, Hero hero)
     {
@@ -69,6 +82,9 @@ public class MagicCircleSystem : MonoBehaviour
 
                 //마법진에서 UI를 찾아서 연결
                 FindUIComponentsInMagicCircle();
+
+                //빛무리 효과 초기화
+                InitializeLightMoteEft();
 
                 Debug.Log("마법진 시스템 초기화 완료");
             }
@@ -235,7 +251,10 @@ public class MagicCircleSystem : MonoBehaviour
         while (chargingTimer < chargingTime)
         {
             chargingTimer += Time.deltaTime;
-            _chargingTimerBar.fillAmount = chargingTimer / chargingTime;
+            float progress = chargingTimer / chargingTime;
+            _chargingTimerBar.fillAmount = progress;
+            if (_magicCircle != null)
+                _magicCircle.UpdateChargeVisual(progress);
             yield return null;
         }
 
@@ -314,5 +333,83 @@ public class MagicCircleSystem : MonoBehaviour
             _stageManager.CompleteStage();
         else
             Debug.Log("아직 스테이지를 클리어할 수 없습니다.");
+    }
+
+    /// <summary>
+    /// 빛무리 초기화
+    /// </summary>
+    void InitializeLightMoteEft()
+    {
+        if (_lightMoteEffectInstance == null)
+        {
+            Debug.LogWarning("빛무리 효과 프리팹이 설정되지 않았습니다.");
+            return;
+        }
+
+        if (_lightMoteEffectInstance != null)
+            Destroy(_lightMoteEffectInstance.gameObject);
+
+        _lightMoteEffectInstance = Instantiate(_lightMoteEffectPrefab, Vector3.zero, Quaternion.identity, this.transform);
+        _lightMoteEffectInstance.Stop();
+    }
+
+    /// <summary>
+    /// 매 프레임 빛무리 효과를 처리하는 함수
+    /// </summary>
+    void HandleLightMoteEft()
+    {
+        if (_lightMoteEffectInstance == null || _hero == null || _magicCircleInstance == null) return;
+
+        // Idle 상태일 때만 빛무리 효과 활성화
+        if (_magicCircle.CurState != MagicCirclrState.Idle)
+        {
+            if (_lightMoteEffectInstance.isPlaying)
+            {
+                _lightMoteEffectInstance.Stop();
+            }
+            return;
+        }
+
+        Vector3 playerPos = _hero.transform.position;
+        Vector3 circlePos = _magicCircleInstance.transform.position;
+
+        float distance = Vector3.Distance(playerPos, circlePos);
+
+        // 플레이어가 지정된 반경 내에 있을 경우
+        if (distance <= _effectRadius)
+        {
+            // 파티클 시스템을 플레이어 위치로 이동
+            _lightMoteEffectInstance.transform.position = playerPos;
+
+            // 파티클이 마법진을 향하도록 방향 설정
+            Vector3 direction = (circlePos - playerPos).normalized;
+            var forceModule = _lightMoteEffectInstance.forceOverLifetime;
+            forceModule.enabled = true;
+            forceModule.x = new ParticleSystem.MinMaxCurve(direction.x * _particleSpeed);
+            forceModule.y = new ParticleSystem.MinMaxCurve(direction.y * _particleSpeed);
+            forceModule.z = new ParticleSystem.MinMaxCurve(direction.z * _particleSpeed);
+
+            // 거리에 따라 방출률(빈도)을 계산 (가까울수록 많이)
+            // (최대거리: 0, 최소거리: 1)로 정규화
+            float emissionLerp = 1 - (distance / _effectRadius);
+            float currentEmissionRate = Mathf.Lerp(_minEmissionRate, _maxEmissionRate, emissionLerp);
+
+            var emissionModule = _lightMoteEffectInstance.emission;
+            emissionModule.rateOverTime = currentEmissionRate;
+
+            // 파티클 시스템이 재생 중이 아니라면 재생
+            if (!_lightMoteEffectInstance.isPlaying)
+            {
+                _lightMoteEffectInstance.Play();
+            }
+        }
+        else // 반경 밖에 있을 경우
+        {
+            // 파티클 시스템이 재생 중이라면 정지 (이미 생성된 파티클은 사라질 때까지 유지)
+            if (_lightMoteEffectInstance.isPlaying)
+            {
+                _lightMoteEffectInstance.Stop();
+            }
+        }
     }
 }

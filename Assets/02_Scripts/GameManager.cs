@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -205,7 +204,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// 선택된 캐릭터 프리팹을 Hero 게임오브젝트의 자식으로 생성
     /// </summary>
-    private System.Collections.IEnumerator SpawnSelectedCharacter()
+    private IEnumerator SpawnSelectedCharacter()
     {
         // Hero 게임오브젝트를 찾을 때까지 대기
         Hero heroController = null;

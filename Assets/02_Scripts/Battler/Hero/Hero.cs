@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hero : MonoBehaviour, ILadderUser
+public class Hero : MonoBehaviour
 {
     [Header("----- 컴포넌트 참조 -----")]
     [SerializeField] Mover _mover;
     [SerializeField] Jumper _jumper;
-    [SerializeField] LadderMover _ladderMover;
+    [SerializeField] NewLadderMover _ladderMover;
+    [SerializeField] PlatformInteractor _platformInteractor;
     [SerializeField] LightController _light;
+    [SerializeField] Rigidbody2D _rb;
 
     [Header("----- 프리팹 컴포넌트 참조 -----")]
     [SerializeField] HeroModel _model;
@@ -17,9 +19,6 @@ public class Hero : MonoBehaviour, ILadderUser
     [SerializeField] Animator _animator;
     [SerializeField] SkillManager _skillManager;
     [SerializeField] AttackSystem _attackSystem;
-
-    [Header("----- 사다리 설정 -----")]
-    [SerializeField] LadderUserState _ladderState = new LadderUserState();
 
     [Header("----- 아이템 시스템 -----")]
     [SerializeField] PlayerInventory _inventory;
@@ -34,12 +33,6 @@ public class Hero : MonoBehaviour, ILadderUser
     Camera _camera;
     Vector2 _curInput;
     CharacterData _curCharData;
-
-    //ILadderUser 인터페이스 구현
-    public bool CanUseLadder => true;
-    public bool IsOnLadder => _ladderState.isOnLadder;
-    public bool IsClimbing => _ladderState.isClimbing;
-    //
 
     /// <summary>
     /// 경험치 변화 이벤트
@@ -146,16 +139,13 @@ public class Hero : MonoBehaviour, ILadderUser
         _model.OnPowerChanged += _jumper.SetPower;
         _model.OnDead += OnDead;
 
-        _jumper.OnJumpStateChanged += OnJumpStateChanged;
+        _jumper.OnJumpStateChanged += HandleJumpStateChanged;
 
         //UI
         _model.OnHpChanged += _statusView.SetHpText;
         _model.OnGoldChanged += _statusView.SetGoldText;
         _model.OnExpChanged += _statusView.SetExpBar;
         _model.OnLevelChanged += (_, newLevel) => _statusView.SetLevelText(newLevel);
-
-        if (_ladderMover != null)
-            _ladderMover.OnLadderStateChanged += OnLadderStateChanged;
 
         _skillManager.Initialize(transform);
 
@@ -172,6 +162,7 @@ public class Hero : MonoBehaviour, ILadderUser
     private void Update()
     {
         UpdateFacingDirection();
+
         _statusView.SetLightGauge(_light.GetGaugeRatio());
     }
 
@@ -182,12 +173,47 @@ public class Hero : MonoBehaviour, ILadderUser
     /// <param name="input"></param>
     public void HandleInput(Vector2 input)
     {
-        _curInput = input;
+        if (IsMovementBlocked()) return;
 
-        if (_ladderState.isClimbing)
-            LadderMove(_curInput);
+        bool isOnLadder = _jumper.IsOnLadder;
+        bool canClimb = _ladderMover.IsOverlappingLadder();
+
+        if (!isOnLadder && canClimb && input.y > 0.1f)
+        {
+            _jumper.IsOnLadder = true;
+            isOnLadder = true;
+        }
+        else if (!isOnLadder && canClimb && input.y < -0.1f && !_jumper.IsGrounded)
+        {
+            _jumper.IsOnLadder = true;
+            isOnLadder = true;
+        }
+
+        if (isOnLadder)
+        {
+            if (_jumper.IsGrounded && input.y <= 0)
+            {
+                _jumper.IsOnLadder = false;
+                _ladderMover.ResetGravity();
+                Move(new Vector3(input.x, 0, 0));
+                return;
+            }
+
+            _ladderMover.Climb(input.y);
+            Move(new Vector3(input.x, 0, 0));
+        }
         else
-            Move(_curInput);
+        {
+            if (input.y < -0.1f && _jumper.IsGrounded)
+            {
+                _platformInteractor.PassThroughPlatform();
+            }
+
+            _mover.Move(new Vector3(input.x, 0, 0));
+            _ladderMover?.ResetGravity();
+        }
+
+        _animator.SetFloat("MoveSpeed", Mathf.Abs(_rb.velocity.x));
     }
 
     /// <summary>
@@ -225,34 +251,10 @@ public class Hero : MonoBehaviour, ILadderUser
     }
 
     /// <summary>
-    ///  사다리 이동
-    /// </summary>
-    /// <param name="input"></param>
-    void LadderMove(Vector2 input)
-    {
-        //사다리에서 좌우 이동 입력 시 사다리 내리기
-        if (Mathf.Abs(input.x) > 0.1f && _ladderState != null && _ladderState.CurLadder.CanExitAnyWhere)
-        {
-            ExitLadder();
-            Move(input);
-        }
-        //사다리 위아래 이동
-        else
-        {
-            if (_ladderMover != null)
-                _ladderMover.ClimbLadder(input.y);
-        }
-    }
-
-    /// <summary>
     /// 점프 함수
     /// </summary>
     public void Jump()
     {
-        //사다리에서 점프 시 사다리 내리기
-        if (_ladderState.isClimbing)
-            _ladderMover.ExitLadder();
-
         _jumper.Jump();
     }
 
@@ -260,67 +262,14 @@ public class Hero : MonoBehaviour, ILadderUser
     /// 점프 상태 변경 함수
     /// </summary>
     /// <param name="state"></param>
-    void OnJumpStateChanged(JumpState state)
+    private void HandleJumpStateChanged(JumpState oldState, JumpState newState)
     {
-        if (state == JumpState.Climbing && _ladderState.isOnLadder)
-            _ladderState.isClimbing = true;
-        else if (state != JumpState.Climbing && _ladderState.isClimbing)
-            _ladderState.isClimbing = false;
+        _animator.SetInteger("JumpState", (int)newState);
 
-        //각 상태에 맞는 애니메이터 파라미터 연결
-        switch (state)
+        if (oldState == JumpState.Falling && newState == JumpState.Grounded)
         {
-            case JumpState.Grounded:
-                break;
-            case JumpState.Jumping:
-                break;
-            case JumpState.Falling:
-                break;
-            case JumpState.Climbing:
-                break;
-            default:
-                break;
+            _animator.SetTrigger("Land");
         }
-    }
-
-    /// <summary>
-    /// 사다리 상태 변경 함수
-    /// </summary>
-    /// <param name="isOnLadder"></param>
-    void OnLadderStateChanged(bool isOnLadder)
-    {
-        if (!isOnLadder)
-            _ladderState.isClimbing = false;
-    }
-
-    //ILadderUser 인터페이스 구현
-    public void EnterLadder(LadderSystem ladderSystem)
-    {
-        _ladderState.isOnLadder = true;
-        _ladderState.CurLadder = ladderSystem;
-        _ladderState.LastEnterTime = Time.time;
-
-        if (_ladderMover != null)
-            _ladderMover.SetLadderState(true);
-    }
-
-    public void ExitLadder()
-    {
-        if (_ladderState.CurLadder != null)
-            _ladderState.CurLadder.ForceExitLadder(this);
-
-        _ladderState.Reset();
-
-        if (_ladderMover != null)
-            _ladderMover.SetLadderState(false);
-    }
-
-    public void OnLadderStateChanged(bool isOnLadder, LadderSystem ladderSystem)
-    {
-        if (isOnLadder)
-            EnterLadder(ladderSystem);
-        else
-            ExitLadder();
     }
     #endregion
 
@@ -331,6 +280,7 @@ public class Hero : MonoBehaviour, ILadderUser
     public void UseSkill1()
     {
         _skillManager.UseSkill(SkillManager.SkillType.Skill1);
+        _animator.SetTrigger("Skill1");
     }
 
     /// <summary>
@@ -339,6 +289,7 @@ public class Hero : MonoBehaviour, ILadderUser
     public void UseSkill2()
     {
         _skillManager.UseSkill(SkillManager.SkillType.Skill2);
+        _animator.SetTrigger("Skill2");
     }
 
     /// <summary>
@@ -367,6 +318,7 @@ public class Hero : MonoBehaviour, ILadderUser
     public void UseMoveSkill()
     {
         _skillManager.UseSkill(SkillManager.SkillType.MoveSkill);
+        _animator.SetTrigger("MoveSkill");
     }
 
     public bool CanUseSkill(SkillManager.SkillType skillType)
@@ -401,6 +353,12 @@ public class Hero : MonoBehaviour, ILadderUser
             _attackSystem.PerformAttack();
         }
 
+        _animator.SetTrigger("BasicAttack");
+    }
+
+    public void Interacte()
+    {
+        _animator.SetTrigger("Interacte");
     }
 
     #region --------- 피해 ----------

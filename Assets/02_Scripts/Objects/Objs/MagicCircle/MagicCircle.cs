@@ -90,7 +90,7 @@ public class MagicCircle : InteractableObjects
                 if (_magicCircleCtrl != null)
                     _magicCircleCtrl.enabled = false;
                 // 모든 스프라이트 색상을 회색으로 변경
-                SetAllSpriteColors(Color.grey);
+                SetAllSpriteColors(Color.black);
                 break;
 
             case MagicCirclrState.Charging:
@@ -136,6 +136,14 @@ public class MagicCircle : InteractableObjects
                     runeRenderer.color = new Color(color.r, color.g, color.b, originalRuneColor.a);
                 }
             }
+        }
+    }
+
+    public void UpdateChargeVisual(float chargeProgress)
+    {
+        if (_magicCircleCtrl != null)
+        {
+            _magicCircleCtrl.SetCharge(chargeProgress);
         }
     }
 

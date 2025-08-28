@@ -6,6 +6,7 @@ using FunkyCode;
 public class MagicCircleLight : MonoBehaviour
 {
     //[SerializeField] UnityEngine.Rendering.Universal.Light2D coreLight;
+    
     [SerializeField] Light2D coreLight;
     [SerializeField] float maxIntensity = 5f;
     [SerializeField] float maxRadius = 3f;
@@ -20,6 +21,8 @@ public class MagicCircleLight : MonoBehaviour
         coreLight.pointLightOuterRadius = Mathf.Lerp(0.5f, maxRadius, charge);
         */
 
+        coreLight.gameObject.SetActive(true);
+        
         coreLight.color.a = Mathf.Lerp(0, maxIntensity, charge);
         coreLight.size = Mathf.Lerp(0.5f, maxRadius, charge);
 

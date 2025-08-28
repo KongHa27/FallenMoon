@@ -21,7 +21,7 @@ public class DifficultySelectButton : MonoBehaviour
 
     private void Start()
     {
-        _selectUI = FindObjectOfType<CharacterSelectUI>();
+        _selectUI = FindObjectOfType<SelectSceneUI>();
 
         // 버튼 이벤트 연결
         if (_button != null)
